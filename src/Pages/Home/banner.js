@@ -117,7 +117,8 @@ class Banner extends Component {
       modal: false,
       deadline: 200000,
       minutes: 0,
-      seconds: 0
+      seconds: 0,
+      cancelTimer: false
     }
   }
   handlePreview = (e) => {
@@ -1235,25 +1236,31 @@ class Banner extends Component {
   }
   confirmPopupOpen = () => {
     confirmAlert({
-      title: 'Lender.page says',
-      message: "Time's up. Do you need more time?",
-      buttons: [
-        {
-          label: 'Yes',
-
-          onClick: () => {
-            console.log('yes');
-            //document.getElementById("resetTimer").click();
-            this.resetTimer()
-          }
-        },
-        {
-          label: 'No',
-          onClick: () => {
-            console.log('no');
-          }
-        }
-      ]
+      customUI: ({ onClose }) => {
+        return (
+          <div className="popup">
+            <div className="popup-inner small-popup">
+              <div className="popup-header">
+                <h4>Lender.page says</h4>
+              </div>
+              <div className="popup-content">
+                <p>Time's up. Do you need more time?</p>
+                <button className="btn btn-secondary" onClick={() => {
+                  this.setState({
+                    deadline: 200000,
+                    cancelTimer: true
+                  });
+                  onClose();
+                }}>No</button>
+                <button className="btn btn-primary" onClick={() => {
+                  this.resetTimer();
+                  onClose();
+                }}>Yes</button>
+              </div>
+            </div>
+          </div>
+        )
+      }
     })
   }
   toggleEConsent = () => {
@@ -1264,15 +1271,13 @@ class Banner extends Component {
   componentWillMount() {
     this.getTimeUntil(this.state.deadline);
   }
+  // componentDidMount() {
+  //   setInterval(() => this.getTimeUntil(this.state.deadline), 1000);
+  //   this.resetTimer();
+  // }
 
   leading0 = (num) => {
     return num < 10 ? '0' + num : num;
-  }
-  setCurrentTimer = () => {
-    var d1 = new Date(),
-      d2 = new Date(d1);
-    d2.setMinutes(d1.getMinutes() + 1);
-    return d2;
   }
   resetTimer = () => {
     var d1 = new Date(),
@@ -1342,6 +1347,7 @@ class Banner extends Component {
     const previewButtonView = this.state.previewButtonView;
     const reset = this.state.reset;
     const minutes = this.state.minutes;
+    const cancelTimer = this.state.cancelTimer;
     return (
       <div className="banner-section">
         <Container>
@@ -3492,12 +3498,14 @@ class Banner extends Component {
                       </h3>
                       <p className="mb0" >
                         <span>Session will expire in</span>
-                        {/*600000*/}
-                        <span className="red">
-                          {this.leading0(this.state.minutes)} {minutes === 0 ? ("Minute") : ("Minutes")}
-                          {' '}
-                          {this.leading0(this.state.seconds)} Seconds
+                        {cancelTimer ? (<span className="red">Any Second!</span>) : (
+
+                          <span className="red">
+                            {this.leading0(this.state.minutes)} {minutes === 0 ? ("Minute") : ("Minutes")}
+                            {' '}
+                            {this.leading0(this.state.seconds)} Seconds
                         </span>
+                        )}
                         <strong className="responsive-text">Submit below to request your loan now!</strong>
                       </p>
                       <div className="small-para">We were unable to connect you with our network of third party lenders for your requested amount. However, we work with several lenders who may approve you for a short term loan up to $35,000. Please note that loan amounts, interest rates and repayment terms will vary by lender. If you would like to apply for a short term loan up to $35,000, please select a new loan amount below and click to continue. You will not need to provide additional information.</div>

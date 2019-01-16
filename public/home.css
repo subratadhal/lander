@@ -657,4 +657,7 @@ header {
 .mb0 {
   margin-bottom: 0 !important; }
 
+.react-confirm-alert-overlay {
+  background: transparent !important; }
+
 /*# sourceMappingURL=home.css.map */
