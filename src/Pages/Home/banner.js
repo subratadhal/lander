@@ -721,8 +721,10 @@ class Banner extends Component {
         nextPayDate: date,
         nextPayDateInputStyle: "success"
       });
-      //this.handleNext();
     }
+  }
+  slide17nextPayDateOnClick = e => {
+    this.handleNext();
   }
   slide18employerNameOnChange = e => {
     const employerName = e.target.value;
