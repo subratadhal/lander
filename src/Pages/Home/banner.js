@@ -2665,7 +2665,7 @@ class Banner extends Component {
                           onChange={this.slide17nextPayDateOnChange}
                           onClick={this.slide17nextPayDateOnClick}
                           autoComplete="off"
-                          readonly="true"
+                          readonly
                         />
                         {nextPayDateError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
