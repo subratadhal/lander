@@ -727,6 +727,9 @@ class Banner extends Component {
   slide17nextPayDateOnClick = e => {
     this.handleNext();
   }
+  slide17nextPayDateOnClick = e =>{
+    e.preventDefault()
+  }
   slide18employerNameOnChange = e => {
     const employerName = e.target.value;
     if (validator.isEmpty(employerName)) {
@@ -1377,7 +1380,7 @@ class Banner extends Component {
             <Col sm="8">
               <div className="apply-form-container">
                 <Form className="apply-form">
-                  <div className="steps active" id="slide1">
+                  <div className="steps " id="slide1">
                     <div className="welcome-text">
                       You can get a loan between{" "}
                       <strong>$100 and $35,000</strong>
@@ -2644,7 +2647,7 @@ class Banner extends Component {
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps" id="slide17">
+                  <div className="steps active" id="slide17">
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Next Pay Date
@@ -2660,6 +2663,8 @@ class Banner extends Component {
                           className={nextPayDateInputStyle}
                           selected={this.state.nextPayDate}
                           onChange={this.slide17nextPayDateOnChange}
+                          onClick={this.slide17nextPayDateOnClick}
+                          autoComplete="off"
                         />
                         {nextPayDateError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
