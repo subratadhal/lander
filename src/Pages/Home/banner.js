@@ -727,8 +727,8 @@ class Banner extends Component {
   slide17nextPayDateOnClick = e => {
     this.handleNext();
   }
-  slide17nextPayDateOnClick = e =>{
-    e.preventDefault()
+  slide17nextPayDateOnClick = e => {
+    e.preventDefault();
   }
   slide18employerNameOnChange = e => {
     const employerName = e.target.value;
@@ -2665,6 +2665,7 @@ class Banner extends Component {
                           onChange={this.slide17nextPayDateOnChange}
                           onClick={this.slide17nextPayDateOnClick}
                           autoComplete="off"
+                          readonly="true"
                         />
                         {nextPayDateError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
