@@ -724,10 +724,9 @@ class Banner extends Component {
       //this.handleNext();
     }
   }
+
   slide17nextPayDateOnClick = e => {
-    this.handleNext();
-  }
-  slide17nextPayDateOnClick = e => {
+    document.getElementById("nextPayDate").readOnly = true;
     e.preventDefault();
   }
   slide18employerNameOnChange = e => {
@@ -1299,6 +1298,12 @@ class Banner extends Component {
       this.setState({ minutes, seconds });
     }
   }
+
+  componentDidMount() {
+    const datePicker = document.getElementById("nextPayDate");
+    datePicker.setAttribute("readOnly", true);
+  }
+
 
   render() {
     console.log("this.state", this.state);
@@ -2665,7 +2670,7 @@ class Banner extends Component {
                           onChange={this.slide17nextPayDateOnChange}
                           onClick={this.slide17nextPayDateOnClick}
                           autoComplete="off"
-                          readonly
+                          readonly="readonly"
                         />
                         {nextPayDateError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
