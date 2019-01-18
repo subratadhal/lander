@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Container, Row, Col, Nav, NavItem, NavLink } from "reactstrap";
-import scrollToComponent from 'react-scroll-to-component';
 
 class Navigation extends Component {
   state = {

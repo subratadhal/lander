@@ -1,8 +1,21 @@
 import React, { Component } from "react";
 import "./App.css";
 import Header from "./Common/header";
+import Footer from "./Common/footer";
+import Pagenavigation from "./Common/pagenavigation";
 import Thankyou from "./Pages/Thankyou";
 import Home from "./Pages/Home";
+import HowItWorks from "./Pages/HowItWorks"
+import AboutUs from "./Pages/AboutUs"
+import WhyChooseUs from "./Pages/WhyChooseUs"
+import Questions from "./Pages/Questions"
+import Definitions from "./Pages/Definitions"
+import RatesAndFees from "./Pages/RatesAndFees"
+import LendingPolicy from "./Pages/LendingPolicy"
+import PrivacyPolicy from "./Pages/PrivacyPolicy"
+import TermsOfUse from "./Pages/TermsOfUse"
+import Disclaimer from "./Pages/Disclaimer"
+import Contact from "./Pages/Contact"
 import Unsubscribe from "./Pages/Unsubscribe";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
@@ -15,8 +28,21 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/thankyou" component={Thankyou} />
+            <Route exact path="/how-it-works" component={HowItWorks} />
+            <Route exact path="/about-us" component={AboutUs} />
+            <Route exact path="/why-choose-us" component={WhyChooseUs} />
+            <Route exact path="/questions" component={Questions} />
+            <Route exact path="/definitions" component={Definitions} />
+            <Route exact path="/rates-and-fees" component={RatesAndFees} />
+            <Route exact path="/lending-policy" component={LendingPolicy} />
             <Route exact path="/unsubscribe" component={Unsubscribe} />
+            <Route exact path="/privacy-policy" component={PrivacyPolicy} />
+            <Route exact path="/terms-of-use" component={TermsOfUse} />
+            <Route exact path="/disclaimer" component={Disclaimer} />
+            <Route exact path="/contact" component={Contact} />
           </Switch>
+          <Pagenavigation />
+          <Footer />
         </div>
       </Router>
     );

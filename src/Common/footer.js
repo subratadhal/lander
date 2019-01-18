@@ -3,50 +3,44 @@ import { Container, Row, Col } from "reactstrap";
 class Footer extends Component {
   render() {
     return (
-      <footer className="footer-section">
-        <Container>
-          <Row>
-            <Col xs="12">
-              <p>
-                Lender.page (the "website") is not an offer or solicitation to
-                lend. The website only provides a service and is not an agent,
-                representative, or broker of any lender and does not endorse or
-                charge you for any loan or product. The website operators are
-                not lenders, do not make loans of any type, and do not make
-                credit decisions. The website collects personal information
-                provided by you and forwards it to partners in our lender
-                network. You are under no obligation to use this website or
-                service to initiate, contact, nor apply for credit or any loan
-                product with any service provider or lender. Loan amounts vary
-                from $100 and $35,000 but not all lenders can provide up to
-                $35,000. Providing your information on the website does not
-                guarantee you will be approved for a loan or credit product.
-                Cash transfer times may vary between lenders and may depend on
-                your individual financial institution. In some circumstances
-                faxing may be required. If you have any questions, contact your
-                lender directly for details, questions, or concerns regarding
-                your loan or credit product. Short-term cash loans are meant to
-                provide you with short-term financing to solve immediate cash
-                needs and should not be considered a long-term solution. This
-                service and lenders are not available in all states. Lenders may
-                perform credit checks with the three credit reporting bureaus:
-                Experian, Equifax, or Trans Union or may perform alternative
-                credit checks or consumer reports through alternative providers.
-                By submitting your request, you acknowledge, agree, and
-                authorize that (a) your information may be sent to lenders
-                and/or third-party partners on your behalf, and (b) such lenders
-                may obtain consumer reports and related information about you
-                from one or more consumer reporting agencies, such as
-                TransUnion, Experian and Equifax to evaluate your
-                creditworthiness.
+      <div>
+        <div className="footer-page-article">
+          <Container>
+            <Row>
+              <Col xs="12">
+                <h5>Important Disclosures. Please Read Carefully.</h5>
+                <p>The purpose of shorter duration loans is to provide the borrower temporary financial relief. Such loans are not a long-term financial solution. Persons facing serious financial difficulties should consider other alternatives or should seek out professional financial advice.</p>
+                <p>This website is not an offer to lend. lender.page is not a lender and does not make loan or credit decisions. lender.page connects interested persons with a lender from its network of approved lenders. lender.page does not control and is not responsible for the actions or inactions of any lender, is not an agent, representative or broker of any lender, and does not endorse any lender. lender.page receives compensation from its lenders, often based on a ping-tree model similar to Google AdWords where the highest available bidder is connected to the consumer. Regardless, lender.page’s service is always free to you.</p>
+                <p>This service is not available in all states. If you request a loan in a particular state where such loans are prohibited, or in a location where lender.page does not have an available lender, you will not be connected to a lender. In some cases, you may be given the option of obtaining a loan from a tribal lender. Tribal lenders are subject to tribal and certain federal laws while being immune from state law including usury caps. If you are connected to a tribal lender, please understand that the tribal lender’s rates and fees may be higher than state-licensed lenders. Additionally, tribal lenders may require you to agree to resolve any disputes in a tribal jurisdiction. You are urged to read and understand the terms of any loan offered by any lender, whether tribal or state-licensed, and to reject any particular loan offer that you cannot afford to repay or that includes terms that are not acceptable to you.</p>
+                <p>By submitting your information via this website, you are authorizing lender.page and its partners to do a credit check, which may include verifying your social security number, driver license number or other identification, and a review of your creditworthiness. Credit checks are usually performed by one of the major credit bureaus such as Experian, Equifax and TransUnion, but also may include alternative credit bureaus such as Teletrack, DP Bureau or others. You also authorize lender.page to share your information and credit history with a network of approved lenders and lending partners.</p>
+              </Col>
+              <Col xs="12">
+                <h5>Lender’s Disclosure of Terms.</h5>
+                <p>
+                  The lender you are connected to will provide documents that contain all fees and rate information pertaining to the loan being offered, including any potential fees for late-payments and the rules under which you may be allowed (if permitted by applicable law) to refinance, renew or rollover your loan. Loan fees and interest rates are determined solely by the lender based on the lender’s internal policies, underwriting criteria and applicable law. lender.page has no knowledge of or control over the loan terms offered by a lender. You are urged to read and understand the terms of any loan offered by any lender, whether tribal or state-licensed, and to reject any particular loan offer that you cannot afford to repay or that includes terms that are not acceptable to you.
               </p>
-              <p className="copy">
-                Copyright &#169; 2015 - 2019 Lender.page - all rights reserved
+              </Col>
+              <Col xs="12">
+                <h5>Late Payments Hurt Your Credit Score</h5>
+                <p>
+                  Please be aware that missing a payment or making a late payment can negatively impact your credit score. To protect yourself and your credit history, make sure you only accept loan terms that you can afford to repay. If you cannot make a payment on time, you should contact your lender immediately and discuss how to handle late payments.
               </p>
-            </Col>
-          </Row>
-        </Container>
-      </footer>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        <footer className="footer-section">
+          <Container>
+            <Row>
+              <Col xs="12">
+                <p className="copy">
+                  Copyright &#169; 2012-2019 lender.page. All Rights Reserved
+              </p>
+              </Col>
+            </Row>
+          </Container>
+        </footer>
+      </div>
     );
   }
 }

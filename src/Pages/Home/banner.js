@@ -113,7 +113,6 @@ class Banner extends Component {
       popup: false,
       popupNoThankYou: false,
       popupOffer: false,
-      previewButtonView: false,
       modal: false,
       deadline: 200000,
       minutes: 0,
@@ -121,7 +120,11 @@ class Banner extends Component {
       cancelTimer: false
     }
   }
-  handlePreview = (e) => {
+  handlePreview = e => {
+    console.log('e.keyCode', e.keyCode);
+    if (e.keyCode == 9) {  //tab pressed
+      return;
+    }
     var id = e.target.id;
     document.getElementById(id).disabled = true;
     const c = this.state.currentSlideID;
@@ -145,15 +148,18 @@ class Banner extends Component {
         progressValue: p
       });
     }
-    if (c === 2) {
-      this.setState({
-        previewButtonView: false
-      });
-    }
-
-
   };
-  handleNext = () => {
+  handleNext = e => {
+    console.log('e.keyCode', e.keyCode);
+    if (e.keyCode === 9) {
+      console.log("tab");
+      return;
+    }
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: 'smooth'
+    });
     const c = this.state.currentSlideID;
     if (c < this.state.maxSlider) {
       const c1 = parseInt(this.state.currentSlideID) + 1;
@@ -171,10 +177,11 @@ class Banner extends Component {
       });
     }
   };
+
   slide1OptionChange = e => {
+    console.log('e.keyCode', e.keyCode);
     this.setState({
-      loanAmount: e.target.value,
-      previewButtonView: true
+      loanAmount: e.target.value
     });
 
     const classes = document.getElementsByClassName("slide1-radio");
@@ -185,7 +192,7 @@ class Banner extends Component {
     const id = e.target.id;
     document.getElementById(id + "-level").classList.add("active");
 
-    this.handleNext();
+    this.handleNext(e);
     console.log('slide click', e);
   };
   slide2OptionChange = e => {
@@ -199,7 +206,7 @@ class Banner extends Component {
     }
     const id = e.target.id;
     document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
+    this.handleNext(e);
   };
   slide3EmailAddressOnClick = e => {
     const email = document.getElementById("email");
@@ -215,7 +222,7 @@ class Banner extends Component {
           emailAddress: email.value,
           emailInputStyle: "success"
         });
-        this.handleNext();
+        this.handleNext(e);
       } else {
         this.setState({
           emailError: "Invalid email address",
@@ -321,7 +328,7 @@ class Banner extends Component {
         lastName: lastName.value,
         lastNameInputStyle: "success"
       });
-      this.handleNext();
+      this.handleNext(e);
     }
   };
   slide5ContactNumberOnClick = e => {
@@ -339,7 +346,7 @@ class Banner extends Component {
           contactNumber: contactNumber,
           contactNumberInputStyle: "success"
         });
-        this.handleNext();
+        this.handleNext(e);
       } else {
         this.setState({
           contactNumberError: "This is not a valid contact numner",
@@ -1218,21 +1225,6 @@ class Banner extends Component {
     });
     this.popupAction("offer");
   }
-  termandConditionTriggerClick = (e) => {
-    e.preventDefault();
-    var el = document.getElementById('termandcondition');
-    el.click();
-  }
-  privacyPolicyTriggerClick = (e) => {
-    e.preventDefault();
-    var el = document.getElementById('privacypolicy');
-    el.click();
-  }
-  ratesFeesonTriggerClick = (e) => {
-    e.preventDefault();
-    var el = document.getElementById('loanratefees');
-    el.click();
-  }
   confirmPopupOpen = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -1270,11 +1262,11 @@ class Banner extends Component {
   componentWillMount() {
     this.getTimeUntil(this.state.deadline);
   }
-  // componentDidMount() {
-  //   setInterval(() => this.getTimeUntil(this.state.deadline), 1000);
-  //   this.resetTimer();
-  // }
-
+  componentDidMount() {
+    //Datepicker keyboard disable in mobile
+    const datePicker = document.getElementById("nextPayDate");
+    datePicker.setAttribute("readOnly", true);
+  }
   leading0 = (num) => {
     return num < 10 ? '0' + num : num;
   }
@@ -1295,10 +1287,16 @@ class Banner extends Component {
       this.setState({ minutes, seconds });
     }
   }
-
+  escFunction = (event) => {
+    if (event.keyCode == 9) {
+      event.preventDefault();
+    }
+  }
   componentDidMount() {
-    const datePicker = document.getElementById("nextPayDate");
-    datePicker.setAttribute("readOnly", true);
+    document.addEventListener("keydown", this.escFunction, false);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.escFunction, false);
   }
 
 
@@ -1308,6 +1306,7 @@ class Banner extends Component {
     const progressView = this.state.progressView;
     const emailError = this.state.emailError;
     const emailInputStyle = this.state.emailInputStyle;
+    const firstName = this.state.firstName;
     const firstNameError = this.state.firstNameError;
     const firstNameInputStyle = this.state.firstNameInputStyle;
     const lastNameError = this.state.lastNameError;
@@ -1349,29 +1348,16 @@ class Banner extends Component {
     const popup = this.state.popup;
     const popupNoThankYou = this.state.popupNoThankYou;
     const popupOffer = this.state.popupOffer;
-    const previewButtonView = this.state.previewButtonView;
-    const reset = this.state.reset;
     const minutes = this.state.minutes;
     const cancelTimer = this.state.cancelTimer;
     return (
-      <div className="banner-section">
-        <Container>
-          <Row className="justify-content-sm-center">
+      <div className="banner-section" >
+        <Container >
+          <Row className="justify-content-sm-center" >
             <Col sm="8">
 
               {progressView ? (
-                <div className="progress-bar-container">
-                  {previewButtonView ? (
-                    <Button
-                      id="backButton"
-                      type="button"
-                      color="primary"
-                      onClick={this.handlePreview}> back
-                  </Button>
-                  ) : (
-                      ""
-                    )}
-
+                <div className="progress-bar-container" >
                   <progress value={progress} max="100" />
                   <div className="progress-value">{progress}%</div>
                 </div>
@@ -1379,17 +1365,15 @@ class Banner extends Component {
                   ""
                 )}
             </Col>
-            <Col sm="8">
-              <div className="apply-form-container">
-                <Form className="apply-form">
-                  <div className="steps active" id="slide1">
-                    <div className="welcome-text">
-                      You can get a loan between{" "}
-                      <strong>$100 and $35,000</strong>
-                      for any reason, whether it be to pay for a vehicle repair,
+            <Col sm="8" >
+              <div className="apply-form-container" >
+                <Form className="apply-form" >
+                  <div className="steps active" id="slide1" >
+                    <div className="welcome-text" >
+                      You can get a loan between <strong>$100 and $35,000</strong> for any reason, whether it be to pay for a vehicle repair,
                       home improvement expense, or even a vacation
                     </div>
-                    <div className="inner-steps">
+                    <div className="inner-steps" >
                       <h3 id="" className="title current">
                         How much do you need?
                       </h3>
@@ -1423,6 +1407,7 @@ class Banner extends Component {
                             checked={this.state.loanAmount === "option2"}
                             onChange={this.slide1OptionChange}
                             onClick={this.slide1OptionChange}
+
                           />
                           $500 - $1000
                         </Label>
@@ -1439,6 +1424,7 @@ class Banner extends Component {
                             checked={this.state.loanAmount === "option3"}
                             onChange={this.slide1OptionChange}
                             onClick={this.slide1OptionChange}
+
                           />
                           $1000 - $2500
                         </Label>
@@ -1455,6 +1441,7 @@ class Banner extends Component {
                             checked={this.state.loanAmount === "option4"}
                             onChange={this.slide1OptionChange}
                             onClick={this.slide1OptionChange}
+
                           />
                           $2500 - $5000
                         </Label>
@@ -1471,6 +1458,7 @@ class Banner extends Component {
                             checked={this.state.loanAmount === "option4"}
                             onChange={this.slide1OptionChange}
                             onClick={this.slide1OptionChange}
+
                           />
                           $5000 and over
                         </Label>
@@ -1478,6 +1466,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide2">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         How long do you need to pay it back?
@@ -1547,6 +1542,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide3">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Email Address
@@ -1574,9 +1576,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <small>
-                        By clicking "Next", you agree to our
-                        <span className="anchor" onClick={this.termandConditionTriggerClick} > Terms &amp; Conditions </span>
-                        and <span className="anchor" onClick={this.privacyPolicyTriggerClick}> Privacy Policy </span> and
+                        By clicking "Next", you agree to our <Link to="/terms-of-use">Terms &amp; Conditions</Link> and <Link to="/privacy-policy">Privacy Policy</Link> and
                         to receive important notices and other communications
                         electronically.
                       </small>
@@ -1591,6 +1591,14 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide4">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Your Name
@@ -1611,6 +1619,7 @@ class Banner extends Component {
                           placeholder="First Name"
                           onChange={this.slide4FirstNameOnChange}
                           className={firstNameInputStyle}
+
                         />
                         {firstNameError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
@@ -1632,6 +1641,7 @@ class Banner extends Component {
                           placeholder="Last Name"
                           onChange={this.slide4LastNameOnChange}
                           className={lastNameInputStyle}
+
                         />
                         {lastNameError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
@@ -1647,12 +1657,20 @@ class Banner extends Component {
                         type="button"
                         color="primary"
                         className="mt15"
+
                       >
                         Next
                       </Button>
                     </div>
                   </div>
                   <div className="steps " id="slide5">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Phone Number
@@ -1690,7 +1708,7 @@ class Banner extends Component {
                       <small className="opt-in">
                         Providing your number is consent to receive calls, texts
                         and pre-recorded messages from{" "}
-                        <span className="site-name">FastLoanAdvance</span>, its
+                        <span className="site-name">Lender.page</span>, its
                         subsidiaries, agents and/or partners**
                       </small>
                       <Button
@@ -1704,6 +1722,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide6">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Contact Time
@@ -1758,6 +1783,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide7">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         What's your Birthdate?
@@ -1968,6 +2000,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide8">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Are you active military?
@@ -2007,6 +2046,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide9">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Zip Code
@@ -2047,6 +2093,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide10">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Home Address
@@ -2182,6 +2235,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide11">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         How long have you lived here?
@@ -2266,6 +2326,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide12">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you own your home?
@@ -2305,6 +2372,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide13">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Income Source
@@ -2344,6 +2418,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide14">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Time Employed
@@ -2428,6 +2509,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide15">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         I get paid
@@ -2497,6 +2585,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide16">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Monthly Gross Income
@@ -2650,6 +2745,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide17">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Next Pay Date
@@ -2686,6 +2788,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps" id="slide18">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Employer Name
@@ -2724,6 +2833,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide19">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Employer Phone Number
@@ -2766,6 +2882,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide20">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Drivers license or State ID
@@ -2804,6 +2927,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide21">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         License State
@@ -2895,6 +3025,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide22">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Social Security Number
@@ -2933,6 +3070,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide23">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         ABA Routing Number
@@ -2975,6 +3119,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide24">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Banking Information
@@ -3037,6 +3188,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide25">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do You Have Direct Deposit?
@@ -3077,6 +3235,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide26">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Length of Bank Account
@@ -3161,6 +3326,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide27">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Bank Account Type
@@ -3201,6 +3373,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide28">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Length of Bank Account
@@ -3285,6 +3464,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide29">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Loan Reason
@@ -3355,6 +3541,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide30">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you have $10,000 or more in credit card debt?
@@ -3395,6 +3588,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide31">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you have $10,000 or more in unsecured debt?
@@ -3435,6 +3635,13 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide32">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Can you afford an aggregated monthly payment of $250?
@@ -3474,18 +3681,25 @@ class Banner extends Component {
                     </div>
                   </div>
                   <div className="steps " id="slide33">
+                    <Button
+                      id="backButton"
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Submit Loan Request
                       </h3>
                       <p className="justify">
                         By clicking “Finish Form” I affirm by electronic signature that (1) I have read, understand, and agree to the
-                        &nbsp;<a href="#" onClick={this.privacyPolicyTriggerClick}>Privacy Policy</a>,
+                        &nbsp;<Link to="/privacy-policy">Privacy Policy</Link>,
                         &nbsp;<a href="javascript:void(0)" onClick={this.toggleEConsent}>E-consent</a>
-                        &nbsp;<a href="#" onClick={this.termandConditionTriggerClick} >Terms</a>, and
-                        &nbsp;<a href="#" onClick={this.ratesFeesonTriggerClick} >Rates &amp; Fees</a>,
+                        &nbsp;<Link to="/terms-of-use">Terms</Link>, and
+                        &nbsp;<Link to="/rates-and-fees">Rates &amp; Fees</Link>,
                         and (2) I give my express authorization to share my information with
-                        FastLoanAdvance, lenders, and other marketing partners to contact me at the information provided above via phone call, SMS/text message and/or email.
+                        Lender.page, lenders, and other marketing partners to contact me at the information provided above via phone call, SMS/text message and/or email.
                       </p>
                       <Button
                         onClick={this.slide33finishFormOnClick}
@@ -3500,7 +3714,7 @@ class Banner extends Component {
                   <div className="steps " id="slide34">
                     <div className="inner-steps">
                       <h3 id="" className="title current">
-                        SUBRATA, HURRY! GET YOUR CASH BEFORE TIME RUNS OUT!
+                        {firstName} HURRY! GET YOUR CASH BEFORE TIME RUNS OUT!
                       </h3>
                       <p className="mb0" >
                         <span>Session will expire in</span>

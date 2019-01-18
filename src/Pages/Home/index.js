@@ -1,19 +1,17 @@
 import React, { Component } from "react";
-import Feature from "./feature";
+import Testimonials from "./testimonials";
 import Banner from "./banner";
-import PageArticle from "./page-article";
-import Footer from "../../Common/footer";
-import Navigation from "../../Common/navigation";
+import Infopanel from "./infopanel"
+
+
 
 class Home extends Component {
   render() {
     return (
       <div>
         <Banner />
-        <Navigation />
-        <Feature />
-        <PageArticle />
-        <Footer />
+        <Infopanel/>
+        <Testimonials />
       </div>
     );
   }

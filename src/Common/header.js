@@ -11,7 +11,7 @@ class Header extends Component {
         <Container>
           <Row>
             <Col xs="12">
-              <Link to="/" className="logo">
+              <Link to="/" tabIndex="0" className="logo">
                 <img src={logo} alt="lender" />
               </Link>
             </Col>
