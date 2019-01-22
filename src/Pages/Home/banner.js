@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import CheckV2 from "../../Images/check-v2.png";
 import Spiner from "../../Images/big-spinner.gif";
 import NumberFormat from 'react-number-format';
@@ -149,10 +149,10 @@ class Banner extends Component {
     }
   };
   handleNext = e => {
-    if (e.keyCode === 9) {
-      console.log("tab");
-      return;
-    }
+    // if (e.keyCode === 9) {
+    //   console.log("tab");
+    //   return;
+    // }
     window.scrollTo({
       top: 0,
       left: 0,
@@ -255,7 +255,7 @@ class Banner extends Component {
     const firstName = e.target.value;
     if (validator.isEmpty(firstName)) {
       this.setState({
-        Error: "First Name is required",
+        firstNameError: "First Name is required",
         firstNameInputStyle: "error"
       });
     } else {
@@ -1181,7 +1181,7 @@ class Banner extends Component {
             popupOffer: true
           });
           setTimeout(function () {
-            window.location.replace('http://www.google.com')
+            self.props.history.push('/offers');
           }, 5000);
         } else {
 
@@ -1294,6 +1294,7 @@ class Banner extends Component {
   }
   render() {
     console.log("this.state", this.state);
+
     const progress = this.state.progressValue;
     const progressView = this.state.progressView;
     const emailError = this.state.emailError;
@@ -3868,4 +3869,4 @@ class Banner extends Component {
   }
 }
 
-export default Banner;
+export default withRouter(Banner);

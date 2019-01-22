@@ -44,7 +44,7 @@ class Header extends Component {
                       <Link className="nav-link block-link" to="/login">Login</Link>
                     </NavItem>
                     <NavItem >
-                      <Link className="nav-link" to="/">Get a new loan</Link>
+                      <Link className="nav-link" to="/new-personal-loan">Get a new loan</Link>
                     </NavItem>
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav caret>
@@ -59,7 +59,7 @@ class Header extends Component {
                             <Link className="nav-link " to="/profile">Profile</Link>
                           </NavItem>
                           <NavItem >
-                            <Link className="nav-link " to="/signout">SignOut</Link>
+                            <Link className="nav-link " to="/">SignOut</Link>
                           </NavItem>
                         </ul>
                       </DropdownMenu>
