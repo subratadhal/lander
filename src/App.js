@@ -17,6 +17,8 @@ import TermsOfUse from "./Pages/TermsOfUse"
 import Disclaimer from "./Pages/Disclaimer"
 import Contact from "./Pages/Contact"
 import Unsubscribe from "./Pages/Unsubscribe";
+import Login from "./Pages/Login";
+import ForgotPassword from "./Pages/ForgotPassword";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 class App extends Component {
@@ -40,6 +42,9 @@ class App extends Component {
             <Route exact path="/terms-of-use" component={TermsOfUse} />
             <Route exact path="/disclaimer" component={Disclaimer} />
             <Route exact path="/contact" component={Contact} />
+            <Route exact path="/login" component={Login} />
+            <Route exact path="/forgot-password" component={ForgotPassword} />
+
           </Switch>
           <Pagenavigation />
           <Footer />

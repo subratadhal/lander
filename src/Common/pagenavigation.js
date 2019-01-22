@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Container, Row, Col, Nav, NavItem, NavLink } from "reactstrap";
-
+import { Container, Row, Col, Nav, NavItem } from "reactstrap";
+import { Link } from "react-router-dom";
 class Pagenavigation extends Component {
     render() {
         return (
@@ -9,18 +9,18 @@ class Pagenavigation extends Component {
                     <Row>
                         <Col xs="12">
                             <Nav>
-                                <NavItem><NavLink href="/how-it-works">How It Works</NavLink></NavItem>
-                                <NavItem><NavLink href="/about-us">About Us</NavLink></NavItem>
-                                <NavItem><NavLink href="/why-choose-us">Why Choose Us</NavLink></NavItem>
-                                <NavItem><NavLink href="/questions">Questions</NavLink></NavItem>
-                                <NavItem><NavLink href="/definitions">Definitions</NavLink></NavItem>
-                                <NavItem><NavLink href="/rates-and-fees">Rates & Fees</NavLink></NavItem>
-                                <NavItem><NavLink href="/lending-policy">Lending Policy</NavLink></NavItem>
-                                <NavItem><NavLink href="/unsubscribe">Unsubscribe</NavLink></NavItem>
-                                <NavItem><NavLink href="/privacy-policy">Privacy Policy</NavLink></NavItem>
-                                <NavItem><NavLink href="/terms-of-use">Terms Of Use</NavLink></NavItem>
-                                <NavItem><NavLink href="/disclaimer">Disclaimer</NavLink></NavItem>
-                                <NavItem><NavLink href="/contact">Contact</NavLink></NavItem>
+                                <NavItem><Link className="nav-link" to="/how-it-works">How It Works</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/about-us">About Us</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/why-choose-us">Why Choose Us</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/questions">Questions</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/definitions">Definitions</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/rates-and-fees">Rates & Fees</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/lending-policy">Lending Policy</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/unsubscribe">Unsubscribe</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/privacy-policy">Privacy Policy</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/terms-of-use">Terms Of Use</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/disclaimer">Disclaimer</Link></NavItem>
+                                <NavItem><Link className="nav-link" to="/contact">Contact</Link></NavItem>
                             </Nav>
                         </Col>
                     </Row>

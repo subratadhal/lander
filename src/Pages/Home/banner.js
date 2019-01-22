@@ -121,7 +121,6 @@ class Banner extends Component {
     }
   }
   handlePreview = e => {
-    console.log('e.keyCode', e.keyCode);
     if (e.keyCode == 9) {  //tab pressed
       return;
     }
@@ -150,7 +149,6 @@ class Banner extends Component {
     }
   };
   handleNext = e => {
-    console.log('e.keyCode', e.keyCode);
     if (e.keyCode === 9) {
       console.log("tab");
       return;
@@ -1261,8 +1259,10 @@ class Banner extends Component {
   }
   componentWillMount() {
     this.getTimeUntil(this.state.deadline);
+    document.removeEventListener("keydown", this.escFunction, false);
   }
   componentDidMount() {
+    document.addEventListener("keydown", this.escFunction, false);
     //Datepicker keyboard disable in mobile
     const datePicker = document.getElementById("nextPayDate");
     datePicker.setAttribute("readOnly", true);
@@ -1292,14 +1292,6 @@ class Banner extends Component {
       event.preventDefault();
     }
   }
-  componentDidMount() {
-    document.addEventListener("keydown", this.escFunction, false);
-  }
-  componentWillUnmount() {
-    document.removeEventListener("keydown", this.escFunction, false);
-  }
-
-
   render() {
     console.log("this.state", this.state);
     const progress = this.state.progressValue;
