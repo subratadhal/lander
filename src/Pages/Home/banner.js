@@ -3,7 +3,7 @@ import { withRouter, Link } from "react-router-dom";
 import CheckV2 from "../../Images/check-v2.png";
 import Spiner from "../../Images/big-spinner.gif";
 import NumberFormat from 'react-number-format';
-
+import TooltipItem from "../../Common/tooltipitem";
 import {
   Container,
   Row,
@@ -14,7 +14,8 @@ import {
   Label,
   Input,
   FormFeedback,
-  Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter,
+  InputGroup, InputGroupAddon
 } from "reactstrap";
 import validator from "validator";
 import DatePicker from "react-datepicker";
@@ -28,6 +29,12 @@ class Banner extends Component {
     super(props);
 
     this.state = {
+      tooltips: [
+        {
+          id: 0,
+          text: 'By providing a phone number, you are agreeing that LendingTree, its Network Lenders, and/or partners may contact you at this number, or another number that you later provide. You also agree to receive calls and messages from automated dialing systems and/or by pre-recorded message, and text messages (where applicable) at these numbers. Normal cell phone charges may apply if you provide a cellular number. You may continue with our services without providing a phone number by calling x-xxx-xxx-xxxx.'
+        }
+      ],
       loanAmount: "option3",
       loanDuration: "0",
       currentSlideID: "1",
@@ -904,27 +911,49 @@ class Banner extends Component {
         socialSecurityNumberInputStyle: "error"
       });
     } else {
-      this.setState({
-        socialSecurityNumberError: "",
-        socialSecurityNumber: socialSecurityNumber,
-        socialSecurityNumberInputStyle: "success"
-      });
+      if (validator.isNumeric(socialSecurityNumber)) {
+
+        if (validator.isLength(socialSecurityNumber, { min: 4, max: 4 })) {
+          this.setState({
+            socialSecurityNumberError: "",
+            socialSecurityNumber: socialSecurityNumber,
+            socialSecurityNumberInputStyle: "success"
+          });
+        }
+      } else {
+        this.setState({
+          socialSecurityNumberError: "Please enter only numeric",
+          socialSecurityNumber: socialSecurityNumber,
+          socialSecurityNumberInputStyle: "erroe"
+        });
+      }
     }
   };
   slide22socialSecurityNumberOnClick = e => {
-    const socialSecurityNumber = document.getElementById("socialSecurityNumber");
-    if (validator.isEmpty(socialSecurityNumber.value)) {
+    const ssn = document.getElementById("socialSecurityNumber");
+    const socialSecurityNumber = ssn.value;
+    if (validator.isEmpty(socialSecurityNumber)) {
       this.setState({
         socialSecurityNumberError: "Social Security Number is required",
         socialSecurityNumberInputStyle: "error"
       });
     } else {
-      this.setState({
-        socialSecurityNumberError: "",
-        socialSecurityNumber: socialSecurityNumber.value,
-        socialSecurityNumberInputStyle: "success"
-      });
-      this.handleNext();
+      if (validator.isNumeric(socialSecurityNumber)) {
+        if (validator.isLength(socialSecurityNumber, { min: 4, max: 4 })) {
+          this.setState({
+            socialSecurityNumberError: "",
+            socialSecurityNumber: socialSecurityNumber,
+            socialSecurityNumberInputStyle: "success"
+          });
+          this.handleNext();
+        }
+      } else {
+        this.setState({
+          socialSecurityNumberError: "Please enter only numeric",
+          socialSecurityNumber: socialSecurityNumber,
+          socialSecurityNumberInputStyle: "erroe"
+        });
+      }
     }
   };
   slide23ABARoutingNumberOnClick = (e) => {
@@ -1361,7 +1390,7 @@ class Banner extends Component {
             <Col sm="8" >
               <div className="apply-form-container" >
                 <Form className="apply-form" >
-                  <div className="steps active" id="slide1" >
+                  <div className="steps " id="slide1" >
                     <div className="welcome-text" >
                       You can get a loan between <strong>$100 and $35,000</strong> for any reason, whether it be to pay for a vehicle repair,
                       home improvement expense, or even a vacation
@@ -1534,7 +1563,7 @@ class Banner extends Component {
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide3">
+                  <div className="steps active" id="slide3">
                     <Button
                       id="backButton"
                       type="button"
@@ -3033,7 +3062,7 @@ class Banner extends Component {
                         Lenders use your social security number to verify your identity. It is vital that you enter your valid social security number. Lenders will reject applicants whose information they cannot verify.
                       </p>
                       <FormGroup>
-                        <Label for="socialSecurityNumber" className="bold">
+                        {/* <Label for="socialSecurityNumber" className="bold">
                           Social Security Number
                         </Label>
                         <Input
@@ -3050,7 +3079,34 @@ class Banner extends Component {
                           </FormFeedback>
                         ) : (
                             ""
-                          )}
+                          )} */}
+
+                        <InputGroup className={socialSecurityNumberInputStyle}>
+                          <Label for="email">Please enter the last 4 digits of your SSN <span className="tooltip-icon" id={"Tooltip-" + this.state.tooltips[0].id}>?</span> </Label>
+                          <TooltipItem key={this.state.tooltips[0].id} item={this.state.tooltips[0].text} id={this.state.tooltips[0].id} />
+                          <div className="from-center">
+                            <Input
+                              type="password"
+                              name="socialSecurityNumber"
+                              id="socialSecurityNumber"
+                              autoComplete="nope"
+                              placeholder="xxxx"
+                              onChange={this.slide22socialSecurityNumberOnChange}
+                            />
+                            <InputGroupAddon addonType="prepend">
+                              <span className="password-icon"></span>
+                            </InputGroupAddon>
+                          </div>
+                          {socialSecurityNumberError !== "" ? (
+                            <FormFeedback className="feedback-center" style={{ display: "block" }}>
+                              {socialSecurityNumberError}
+                            </FormFeedback>
+                          ) : (
+                              ""
+                            )}
+
+                        </InputGroup>
+
                       </FormGroup>
                       <Button
                         onClick={this.slide22socialSecurityNumberOnClick}
