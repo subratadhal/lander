@@ -46,6 +46,10 @@ class Header extends Component {
                     <NavItem >
                       <Link className="nav-link" to="/new-personal-loan">Get a new loan</Link>
                     </NavItem>
+                    <NavItem >
+                      <Link className="nav-link" to="/loan-requests">Your Loan Requests</Link>
+                    </NavItem>
+
                     <UncontrolledDropdown nav inNavbar>
                       <DropdownToggle nav caret>
                         Account

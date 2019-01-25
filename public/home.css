@@ -10,6 +10,12 @@ li,
 a {
   font-family: "Montserrat", sans-serif !important; }
 
+a:hover, a:focus, a:active {
+  box-shadow: none;
+  outline: 0;
+  outline-color: transparent;
+  outline-width: 0; }
+
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -238,6 +244,8 @@ header {
             height: 48px;
             border: 0;
             font-weight: 700; }
+            .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:active, .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:focus, .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:hover {
+              box-shadow: none; }
           .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-secondary {
             background: transparent;
             border: 1px solid #ddd !important;
@@ -255,6 +263,7 @@ header {
         font-weight: 700;
         font-size: 26px;
         text-align: center; }
+      .banner-section .apply-form-container .apply-form .slide33-radio,
       .banner-section .apply-form-container .apply-form .slide32-radio,
       .banner-section .apply-form-container .apply-form .slide31-radio,
       .banner-section .apply-form-container .apply-form .slide30-radio,
@@ -262,15 +271,14 @@ header {
       .banner-section .apply-form-container .apply-form .slide28-radio,
       .banner-section .apply-form-container .apply-form .slide27-radio,
       .banner-section .apply-form-container .apply-form .slide26-radio,
-      .banner-section .apply-form-container .apply-form .slide25-radio,
+      .banner-section .apply-form-container .apply-form .slide17-radio,
       .banner-section .apply-form-container .apply-form .slide16-radio,
       .banner-section .apply-form-container .apply-form .slide15-radio,
       .banner-section .apply-form-container .apply-form .slide14-radio,
       .banner-section .apply-form-container .apply-form .slide13-radio,
       .banner-section .apply-form-container .apply-form .slide12-radio,
-      .banner-section .apply-form-container .apply-form .slide11-radio,
-      .banner-section .apply-form-container .apply-form .slide8-radio,
-      .banner-section .apply-form-container .apply-form .slide6-radio,
+      .banner-section .apply-form-container .apply-form .slide9-radio,
+      .banner-section .apply-form-container .apply-form .slide7-radio,
       .banner-section .apply-form-container .apply-form .slide2-radio,
       .banner-section .apply-form-container .apply-form .slide1-radio {
         width: 100%;
@@ -279,6 +287,7 @@ header {
         padding: 10px 0;
         margin-bottom: 10px;
         cursor: pointer; }
+        .banner-section .apply-form-container .apply-form .slide33-radio.active,
         .banner-section .apply-form-container .apply-form .slide32-radio.active,
         .banner-section .apply-form-container .apply-form .slide31-radio.active,
         .banner-section .apply-form-container .apply-form .slide30-radio.active,
@@ -286,20 +295,20 @@ header {
         .banner-section .apply-form-container .apply-form .slide28-radio.active,
         .banner-section .apply-form-container .apply-form .slide27-radio.active,
         .banner-section .apply-form-container .apply-form .slide26-radio.active,
-        .banner-section .apply-form-container .apply-form .slide25-radio.active,
+        .banner-section .apply-form-container .apply-form .slide17-radio.active,
         .banner-section .apply-form-container .apply-form .slide16-radio.active,
         .banner-section .apply-form-container .apply-form .slide15-radio.active,
         .banner-section .apply-form-container .apply-form .slide14-radio.active,
         .banner-section .apply-form-container .apply-form .slide13-radio.active,
         .banner-section .apply-form-container .apply-form .slide12-radio.active,
-        .banner-section .apply-form-container .apply-form .slide11-radio.active,
-        .banner-section .apply-form-container .apply-form .slide8-radio.active,
-        .banner-section .apply-form-container .apply-form .slide6-radio.active,
+        .banner-section .apply-form-container .apply-form .slide9-radio.active,
+        .banner-section .apply-form-container .apply-form .slide7-radio.active,
         .banner-section .apply-form-container .apply-form .slide2-radio.active,
         .banner-section .apply-form-container .apply-form .slide1-radio.active {
           border-color: #95c11f;
           background: #95c11f;
           color: #fff; }
+        .banner-section .apply-form-container .apply-form .slide33-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide32-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide31-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide30-radio input[type="radio"],
@@ -307,15 +316,14 @@ header {
         .banner-section .apply-form-container .apply-form .slide28-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide27-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide26-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide25-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide17-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide16-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide15-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide14-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide13-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide12-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide11-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide8-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide6-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide9-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide7-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide2-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide1-radio input[type="radio"] {
           visibility: hidden; }
@@ -996,9 +1004,10 @@ table {
       background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA8AAAAPCAQAAACR313BAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAAmJLR0QAAKqNIzIAAAAJcEhZcwAADdcAAA3XAUIom3gAAAAHdElNRQfjARYIHR9oYdIuAAABOUlEQVQY03XRvy8DcRjH8c/zva8iwtD4MWAyGQw6EGGon0tNDRtLI3V3iUGHhu0SicRUCdFz/oAOUhaTkN4tFelgESNJI2mUoYMY1N1jOJJrw3t5kuf1bA/hp832zwUvQmEuc8l0wP6W/KEmxC6/wuEaDfCsePc00wbUKAGAuk9xWju69E8N+bKKDNJcJJsAdZ223QmrgkDqKNnIo58Sna2PvGzaQdTO0YMwhmlHhmJ4akTA1WWUx/DmXUga5wKasirIIbfR9SElCb7Hn7mpUAfh37QTLstkt5LhEl8dPzQpIcq6UGJYobS40e4aVY1DYVvSPDsY4cmWWhCTQ5RlzaoLnsYW7ZFTnzLEL+pxpYhDMw+QvtR7ZnjqIh0AKNAz92GG2yiVPQ28BDBEdc6LYBBVcft1bdX97TfMt22K6qeQaQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAxOS0wMS0yMlQwNzoyOTozMSswMTowMBki15IAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMTktMDEtMjJUMDc6Mjk6MzErMDE6MDBof28uAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAAABJRU5ErkJggg==") no-repeat center; }
 
 .account-pages {
-  min-height: calc(100vh - 155px);
+  min-height: calc(100vh - 100px);
   padding: 110px 0 40px 0;
-  border-bottom: 1px solid #999; }
+  border-bottom: 1px solid #999;
+  background: #eee; }
   .account-pages h1.pagetitle {
     color: #111;
     font-size: 30px;
@@ -1028,6 +1037,7 @@ table {
     .account-pages p.common-paragraph strong {
       font-weight: 600; }
   .account-pages .loan-row {
+    background: #fff;
     display: flex;
     flex-direction: row;
     border: 1px solid #ccc;
@@ -1075,7 +1085,8 @@ table {
     margin-top: 20px;
     border: 1px solid #ccc;
     display: flex;
-    flex-direction: column; }
+    flex-direction: column;
+    background: #fff; }
     .account-pages .result-container .rc-row {
       display: flex;
       flex-direction: column;
@@ -1096,13 +1107,10 @@ table {
           content: "";
           width: 15px;
           height: 15px;
-          border-top: 15px solid transparent;
           border-bottom: 15px solid transparent;
           border-right: 15px solid #95c11f;
-          top: 20px;
-          top: 16px;
-          left: 0px;
-          z-index: -1; }
+          top: 31px;
+          left: 0px; }
       .account-pages .result-container .rc-row .rc-heading {
         display: flex;
         flex-direction: row;
@@ -1258,6 +1266,7 @@ table {
           .account-pages .result-container .rc-row .rc-row-3 .offer-loan-row .offer-loan-row-column .offer-loan-row-column--value strong {
             font-weight: 600; } }
 .wizard {
+  background: #fff;
   padding: 30px;
   border: 1px solid #ccc;
   display: flex;
@@ -1269,9 +1278,9 @@ table {
     display: flex;
     align-items: flex-start;
     color: #95c11f;
-    font-size: 32px;
+    font-size: 26px;
     font-weight: 600;
-    margin-bottom: 15px; }
+    margin-bottom: 25px; }
   .wizard .wizard-body.max400 {
     max-width: 400px; }
   .wizard .wizard-body .form-group label.bold {
@@ -1421,5 +1430,64 @@ table {
   border-radius: 50%;
   color: #fff;
   font-size: 12px; }
+
+.loan-request-row {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 20px;
+  margin-bottom: 20px; }
+  .loan-request-row .loan-request-column {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    align-items: center; }
+    .loan-request-row .loan-request-column .loan-request-icon {
+      display: flex;
+      flex-basis: 120px;
+      height: 70px;
+      margin-right: 20px;
+      align-items: center;
+      justify-content: center; }
+      .loan-request-row .loan-request-column .loan-request-icon .donut-chart {
+        width: 93px; }
+      .loan-request-row .loan-request-column .loan-request-icon span.money-icon {
+        width: 64px;
+        height: 64px;
+        background: url("data:image/png;base64,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") no-repeat center; }
+    .loan-request-row .loan-request-column .loan-request-text {
+      display: flex;
+      flex-direction: column; }
+      .loan-request-row .loan-request-column .loan-request-text h3 {
+        font-size: 18px;
+        font-weight: 600; }
+      .loan-request-row .loan-request-column .loan-request-text p {
+        color: #666;
+        margin-bottom: 0; }
+      .loan-request-row .loan-request-column .loan-request-text small {
+        color: #888; }
+    .loan-request-row .loan-request-column a {
+      color: #888; }
+      .loan-request-row .loan-request-column a.loan-request-action {
+        font-size: 14px; }
+        .loan-request-row .loan-request-column a.loan-request-action span {
+          font-size: 25px;
+          padding-left: 6px;
+          position: relative;
+          top: 2px; }
+      .loan-request-row .loan-request-column a:hover {
+        color: #95c11f;
+        text-decoration: none; }
+    .loan-request-row .loan-request-column:last-child {
+      flex-basis: 170px;
+      justify-content: flex-end; }
+
+@media (max-width: 768px) {
+  .loan-request-row {
+    flex-direction: column; }
+    .loan-request-row .loan-request-column:last-child {
+      flex: 1;
+      justify-content: flex-end;
+      padding-left: 86px; } }
 
 /*# sourceMappingURL=home.css.map */

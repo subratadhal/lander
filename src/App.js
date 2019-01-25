@@ -23,6 +23,7 @@ import Dashboard from "./Pages/Dashboard";
 import Profile from "./Pages/Profile";
 import Offers from "./Pages/Offers";
 import NewPersonalLoan from "./Pages/NewPersonalLoan";
+import LoanRequests from "./Pages/LoanRequests";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 class App extends Component {
@@ -52,6 +53,7 @@ class App extends Component {
             <Route exact path="/profile" component={Profile} />
             <Route exact path="/offers" component={Offers} />
             <Route exact path="/new-personal-loan" component={NewPersonalLoan} />
+            <Route exact path="/loan-requests" component={LoanRequests} />
 
           </Switch>
           <Pagenavigation />

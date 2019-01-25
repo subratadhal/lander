@@ -7,8 +7,6 @@ import {
     Button,
     Input
 } from "reactstrap";
-import validator from "validator";
-import { Link } from "react-router-dom";
 class Offers extends Component {
     constructor(props) {
         super(props);

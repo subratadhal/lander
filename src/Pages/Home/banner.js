@@ -19,11 +19,12 @@ import {
 } from "reactstrap";
 import validator from "validator";
 import DatePicker from "react-datepicker";
+import RadioInput from "../../Common/radioInput";
 import "react-datepicker/dist/react-datepicker.css";
-
+import radioData from '../../JsonData/radioButtonsData.json';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
-
+import generator from 'generate-password';
 class Banner extends Component {
   constructor(props) {
     super(props);
@@ -114,7 +115,13 @@ class Banner extends Component {
       moreInUnsecuredDebt: "",
       affordAggregatedMonthlyPayment: "",
 
-      maxSlider: "34",
+      password: "",
+      passwordError: "",
+      passwordInputStyle: "",
+      passwordSuggestion: '',
+      passwordSuggestionWrapper: false,
+
+      maxSlider: "35",
       progressValue: "2",
       progressView: true,
       popup: false,
@@ -124,15 +131,15 @@ class Banner extends Component {
       deadline: 200000,
       minutes: 0,
       seconds: 0,
-      cancelTimer: false
+      cancelTimer: false,
     }
   }
   handlePreview = e => {
-    if (e.keyCode == 9) {  //tab pressed
-      return;
-    }
-    var id = e.target.id;
-    document.getElementById(id).disabled = true;
+    // if (e.keyCode == 9) {  //tab pressed
+    //   return;
+    // }
+    //var id = e.target.id;
+    //document.getElementById(id).disabled = true;
     const c = this.state.currentSlideID;
     if (c >= 2) {
       const c1 = parseInt(this.state.currentSlideID) - 1;
@@ -144,15 +151,16 @@ class Banner extends Component {
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
         document.getElementById("slide" + c1).classList.remove("previous");
-        if (c !== 2) {
-          document.getElementById(id).disabled = false;
-        }
+        // if (c !== 2) {
+        //   document.getElementById(id).disabled = false;
+        // }
       }, 1000);
       const p = parseInt(this.state.progressValue) - 3;
       this.setState({
         currentSlideID: c1,
         progressValue: p
       });
+      localStorage.setItem('currentSlideID', c1)
     }
   };
   handleNext = e => {
@@ -180,39 +188,44 @@ class Banner extends Component {
         currentSlideID: c1,
         progressValue: p
       });
+      localStorage.setItem('currentSlideID', c1)
     }
   };
 
-  slide1OptionChange = e => {
-    console.log('e.keyCode', e.keyCode);
-    this.setState({
-      loanAmount: e.target.value
-    });
+  setSlider = () => {
+    var currentSlideID = localStorage.getItem('currentSlideID');
+    var previousSlide = currentSlideID - 1;
+    if (currentSlideID > 1) {
+      document.getElementById("slide1").classList.remove("active");
+      document.getElementById("slide" + currentSlideID).classList.add("active");
+      this.setState({
+        currentSlideID: currentSlideID,
+        progressValue: (3 * previousSlide) + 2
+      });
+      var i = currentSlideID;
+      do {
+        i = i - 1;
+        document.getElementById("slide" + i.toString()).classList.add("previous");
+      } while (i > 1);
 
-    const classes = document.getElementsByClassName("slide1-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
     }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
+  }
 
-    this.handleNext(e);
-    console.log('slide click', e);
-  };
-  slide2OptionChange = e => {
-    this.setState({
-      loanDuration: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide2-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext(e);
-  };
+  // slide2OptionChange = e => {
+  //   this.setState({
+  //     loanDuration: e.target.value
+  //   });
+  //   localStorage.setItem('loanDuration', e.target.value);
+
+  //   const classes = document.getElementsByClassName("slide2-radio");
+  //   var i;
+  //   for (i = 0; i < classes.length; i++) {
+  //     classes[i].classList.remove("active");
+  //   }
+  //   const id = e.target.id;
+  //   document.getElementById(id + "-level").classList.add("active");
+  //   this.handleNext(e);
+  // };
   slide3EmailAddressOnClick = e => {
     const email = document.getElementById("email");
     if (validator.isEmpty(email.value)) {
@@ -258,7 +271,86 @@ class Banner extends Component {
       }
     }
   };
-  slide4FirstNameOnChange = e => {
+
+  slide4PasswordOnClick = e => {
+    e.stopPropagation();
+    this.setState({
+      passwordSuggestionWrapper: true
+    });
+  }
+  passwordMuskOnClick = e => {
+    e.stopPropagation();
+    this.setState({
+      password: this.state.passwordSuggestion,
+      passwordSuggestionWrapper: false,
+      passwordError: "",
+      passwordInputStyle: "success"
+    });
+  }
+  slide4PasswordOnChange = e => {
+    const password = e.target.value;
+    if (validator.isEmpty(password)) {
+      this.setState({
+        passwordError: "Password is required",
+        passwordInputStyle: "error",
+        password: "",
+      });
+    } else {
+      if (validator.isLength(password, { min: 6, max: 15 })) {
+        this.setState({
+          passwordError: "",
+          password: password,
+          passwordInputStyle: "success"
+        });
+      } else {
+        this.setState({
+          passwordError: "Please enter at least 6 characters.",
+          passwordInputStyle: "error",
+          password: password,
+        });
+      }
+    }
+  };
+  passwordResetOnClick = () => {
+    this.setState({
+      passwordSuggestion: generator.generate({
+        length: 15,
+        numbers: true,
+        symbols: true,
+        uppercase: true
+      })
+    });
+  }
+
+  slide4CreatePasswordNextOnClick = e => {
+    const pw = document.getElementById("password");
+    const password = pw.value;
+    if (validator.isEmpty(password)) {
+
+      this.setState({
+        passwordError: "Password is required",
+        passwordInputStyle: "error",
+        password: "",
+      });
+
+    } else {
+      if (validator.isLength(password, { min: 6, max: 15 })) {
+        this.setState({
+          passwordError: "",
+          password: password,
+          passwordInputStyle: "success"
+        });
+        this.handleNext(e);
+      } else {
+        this.setState({
+          passwordError: "Please enter at least 6 characters.",
+          passwordInputStyle: "error",
+          password: password,
+        });
+      }
+    }
+  }
+  slide5FirstNameOnChange = e => {
     const firstName = e.target.value;
     if (validator.isEmpty(firstName)) {
       this.setState({
@@ -281,7 +373,7 @@ class Banner extends Component {
       }
     }
   };
-  slide4LastNameOnChange = e => {
+  slide5LastNameOnChange = e => {
     const lastName = e.target.value;
     if (validator.isEmpty(lastName)) {
       this.setState({
@@ -304,7 +396,7 @@ class Banner extends Component {
       }
     }
   };
-  slide4FirstNameLastNameOnClick = e => {
+  slide5FirstNameLastNameOnClick = e => {
     const firstName = document.getElementById("firstName");
     const lastName = document.getElementById("lastName");
 
@@ -336,7 +428,7 @@ class Banner extends Component {
       this.handleNext(e);
     }
   };
-  slide5ContactNumberOnClick = e => {
+  slide6ContactNumberOnClick = e => {
     const contactNumber = this.state.contactNumber;
     if (validator.isEmpty(contactNumber)) {
       this.setState({
@@ -361,7 +453,7 @@ class Banner extends Component {
       }
     }
   };
-  slide5ContactNumberOnChange = (val) => {
+  slide6ContactNumberOnChange = (val) => {
     const contactNumber = val.value;
     if (validator.isEmpty(contactNumber)) {
       this.setState({
@@ -385,20 +477,7 @@ class Banner extends Component {
       }
     }
   };
-  slide6OptionChange = e => {
-    this.setState({
-      contactTime: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide6-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide7MonthOnChange = e => {
+  slide8MonthOnChange = e => {
     const month = e.target.value;
     if (validator.isEmpty(month)) {
       this.setState({
@@ -413,7 +492,7 @@ class Banner extends Component {
       });
     }
   };
-  slide7DayOnChange = e => {
+  slide8DayOnChange = e => {
     const day = e.target.value;
     if (validator.isEmpty(day)) {
       this.setState({
@@ -428,7 +507,7 @@ class Banner extends Component {
       });
     }
   };
-  slide7YearOnChange = e => {
+  slide8YearOnChange = e => {
     const year = e.target.value;
     if (validator.isEmpty(year)) {
       this.setState({
@@ -443,7 +522,7 @@ class Banner extends Component {
       });
     }
   };
-  slide7DOBOnClick = e => {
+  slide8DOBOnClick = e => {
     const month = document.getElementById("month");
     const day = document.getElementById("day");
     const year = document.getElementById("year");
@@ -485,21 +564,7 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide8OptionChange = e => {
-    this.setState({
-      activeMilitary: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide8-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide9zipCodeOnClick = e => {
+  slide10zipCodeOnClick = e => {
     const zipCode = document.getElementById("zipCode");
     if (validator.isEmpty(zipCode.value)) {
       this.setState({
@@ -530,7 +595,7 @@ class Banner extends Component {
       }
     }
   };
-  slide9zipCodeOnChange = e => {
+  slide10zipCodeOnChange = e => {
     const zipCode = e.target.value;
     if (validator.isEmpty(zipCode)) {
       this.setState({
@@ -560,7 +625,7 @@ class Banner extends Component {
       }
     }
   };
-  slide10streetAddressOnChange = e => {
+  slide11streetAddressOnChange = e => {
     const streetAddres = e.target.value;
     if (validator.isEmpty(streetAddres)) {
       this.setState({
@@ -575,7 +640,7 @@ class Banner extends Component {
       });
     }
   };
-  slide10cityOnChange = e => {
+  slide11cityOnChange = e => {
     const city = e.target.value;
     if (validator.isEmpty(city)) {
       this.setState({
@@ -590,7 +655,7 @@ class Banner extends Component {
       });
     }
   };
-  slide10stateOnChange = e => {
+  slide11stateOnChange = e => {
     const state = e.target.value;
     if (validator.isEmpty(state)) {
       this.setState({
@@ -605,7 +670,7 @@ class Banner extends Component {
       });
     }
   };
-  slide10HomeAddressOnClick = e => {
+  slide11HomeAddressOnClick = e => {
     const streetAddress = document.getElementById("streetAddress");
     const city = document.getElementById("city");
     const state = document.getElementById("state");
@@ -648,48 +713,9 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide11OptionChange = e => {
-    this.setState({
-      howLongLived: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide11-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide12OptionChange = e => {
-    this.setState({
-      ownYourHome: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide12-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide13OptionChange = e => {
-    this.setState({
-      incomeSource: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide13-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
   slide14OptionChange = e => {
     this.setState({
-      timeEmployed: e.target.value
+      incomeSource: e.target.value
     });
     const classes = document.getElementsByClassName("slide14-radio");
     var i;
@@ -702,7 +728,7 @@ class Banner extends Component {
   };
   slide15OptionChange = e => {
     this.setState({
-      iGetPaid: e.target.value
+      timeEmployed: e.target.value
     });
     const classes = document.getElementsByClassName("slide15-radio");
     var i;
@@ -715,7 +741,7 @@ class Banner extends Component {
   };
   slide16OptionChange = e => {
     this.setState({
-      monthlyGrossIncome: e.target.value
+      iGetPaid: e.target.value
     });
     const classes = document.getElementsByClassName("slide16-radio");
     var i;
@@ -726,7 +752,20 @@ class Banner extends Component {
     document.getElementById(id + "-level").classList.add("active");
     this.handleNext();
   };
-  slide17nextPayDateOnChange = (date) => {
+  slide17OptionChange = e => {
+    this.setState({
+      monthlyGrossIncome: e.target.value
+    });
+    const classes = document.getElementsByClassName("slide17-radio");
+    var i;
+    for (i = 0; i < classes.length; i++) {
+      classes[i].classList.remove("active");
+    }
+    const id = e.target.id;
+    document.getElementById(id + "-level").classList.add("active");
+    this.handleNext();
+  };
+  slide18nextPayDateOnChange = (date) => {
     if (date !== null) {
       this.setState({
         nextPayDateError: "",
@@ -735,10 +774,10 @@ class Banner extends Component {
       });
     }
   }
-  slide17nextPayDateOnClick = e => {
+  slide18nextPayDateOnClick = e => {
     this.handleNext();
   }
-  slide18employerNameOnChange = e => {
+  slide19employerNameOnChange = e => {
     const employerName = e.target.value;
     if (validator.isEmpty(employerName)) {
       this.setState({
@@ -761,7 +800,7 @@ class Banner extends Component {
       }
     }
   };
-  slide18employerNameOnClick = e => {
+  slide19employerNameOnClick = e => {
     const employerName = document.getElementById("employerName");
     if (validator.isEmpty(employerName.value)) {
       this.setState({
@@ -777,7 +816,7 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide19employerPhoneNumberOnClick = (e) => {
+  slide20employerPhoneNumberOnClick = (e) => {
     const employerPhoneNumber = this.state.employerPhoneNumber;
     if (validator.isEmpty(employerPhoneNumber)) {
       this.setState({
@@ -802,7 +841,7 @@ class Banner extends Component {
       }
     }
   };
-  slide19employerPhoneNumberOnChange = (val) => {
+  slide20employerPhoneNumberOnChange = (val) => {
     const employerPhoneNumber = val.value;
     if (validator.isEmpty(employerPhoneNumber)) {
       this.setState({
@@ -826,7 +865,7 @@ class Banner extends Component {
       }
     }
   };
-  slide20driversLicenseOrStateIDOnChange = e => {
+  slide21driversLicenseOrStateIDOnChange = e => {
     const driversLicenseOrStateID = e.target.value;
     if (validator.isEmpty(driversLicenseOrStateID)) {
       this.setState({
@@ -848,7 +887,7 @@ class Banner extends Component {
       }
     }
   };
-  slide20driversLicenseOrStateIDOnClick = e => {
+  slide21driversLicenseOrStateIDOnClick = e => {
     const ds = document.getElementById("driversLicenseOrStateID");
     const driversLicenseOrStateID = ds.value;
     if (validator.isEmpty(driversLicenseOrStateID)) {
@@ -872,7 +911,7 @@ class Banner extends Component {
       }
     }
   };
-  slide21licenseStateOnChange = e => {
+  slide22licenseStateOnChange = e => {
     const licenseState = e.target.value;
     if (validator.isEmpty(licenseState)) {
       this.setState({
@@ -887,7 +926,7 @@ class Banner extends Component {
       });
     }
   };
-  slide21licenseStateOnClick = e => {
+  slide22licenseStateOnClick = e => {
     const licenseState = document.getElementById("licenseState");
     if (validator.isEmpty(licenseState.value)) {
       this.setState({
@@ -903,7 +942,7 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide22socialSecurityNumberOnChange = e => {
+  slide23socialSecurityNumberOnChange = e => {
     const socialSecurityNumber = e.target.value;
     if (validator.isEmpty(socialSecurityNumber)) {
       this.setState({
@@ -929,7 +968,7 @@ class Banner extends Component {
       }
     }
   };
-  slide22socialSecurityNumberOnClick = e => {
+  slide23socialSecurityNumberOnClick = e => {
     const ssn = document.getElementById("socialSecurityNumber");
     const socialSecurityNumber = ssn.value;
     if (validator.isEmpty(socialSecurityNumber)) {
@@ -956,7 +995,7 @@ class Banner extends Component {
       }
     }
   };
-  slide23ABARoutingNumberOnClick = (e) => {
+  slide24ABARoutingNumberOnClick = (e) => {
     const ABARoutingNumber = this.state.ABARoutingNumber;
     if (validator.isEmpty(ABARoutingNumber)) {
       this.setState({
@@ -981,7 +1020,7 @@ class Banner extends Component {
       }
     }
   };
-  slide23ABARoutingNumberOnChange = (e) => {
+  slide24ABARoutingNumberOnChange = (e) => {
     const ABARoutingNumber = e.target.value;
     if (validator.isEmpty(ABARoutingNumber)) {
       this.setState({
@@ -1006,7 +1045,7 @@ class Banner extends Component {
       }
     }
   };
-  slide24bankNameOnChange = e => {
+  slide25bankNameOnChange = e => {
     const bankName = e.target.value;
     if (validator.isEmpty(bankName)) {
       this.setState({
@@ -1021,7 +1060,7 @@ class Banner extends Component {
       });
     }
   }
-  slide24bankAccountNumberOnChange = e => {
+  slide25bankAccountNumberOnChange = e => {
     const bankAccountNumber = e.target.value;
     if (validator.isEmpty(bankAccountNumber)) {
       this.setState({
@@ -1036,7 +1075,7 @@ class Banner extends Component {
       });
     }
   }
-  slide24bankingInformationOnClick = e => {
+  slide25bankingInformationOnClick = e => {
     const bankAccountNumber = document.getElementById("bankAccountNumber");
     const bankName = document.getElementById("bankName");
     if (
@@ -1067,24 +1106,9 @@ class Banner extends Component {
       this.handleNext();
     }
   }
-  slide25OptionChange = e => {
-    this.setState({
-      directDeposit: e.target.value
-    });
-
-    const classes = document.getElementsByClassName("slide25-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
   slide26OptionChange = e => {
     this.setState({
-      lengthOfBankAccount: e.target.value
+      directDeposit: e.target.value
     });
 
     const classes = document.getElementsByClassName("slide26-radio");
@@ -1099,7 +1123,7 @@ class Banner extends Component {
   };
   slide27OptionChange = e => {
     this.setState({
-      bankAccountType: e.target.value
+      lengthOfBankAccount: e.target.value
     });
 
     const classes = document.getElementsByClassName("slide27-radio");
@@ -1114,8 +1138,9 @@ class Banner extends Component {
   };
   slide28OptionChange = e => {
     this.setState({
-      lengthOfBankAccount: e.target.value
+      bankAccountType: e.target.value
     });
+
     const classes = document.getElementsByClassName("slide28-radio");
     var i;
     for (i = 0; i < classes.length; i++) {
@@ -1128,7 +1153,7 @@ class Banner extends Component {
   };
   slide29OptionChange = e => {
     this.setState({
-      loanReason: e.target.value
+      lengthOfBankAccount: e.target.value
     });
     const classes = document.getElementsByClassName("slide29-radio");
     var i;
@@ -1142,7 +1167,7 @@ class Banner extends Component {
   };
   slide30OptionChange = e => {
     this.setState({
-      moreInCreditCardDebt: e.target.value
+      loanReason: e.target.value
     });
     const classes = document.getElementsByClassName("slide30-radio");
     var i;
@@ -1156,7 +1181,7 @@ class Banner extends Component {
   };
   slide31OptionChange = e => {
     this.setState({
-      moreInUnsecuredDebt: e.target.value
+      moreInCreditCardDebt: e.target.value
     });
     const classes = document.getElementsByClassName("slide31-radio");
     var i;
@@ -1170,7 +1195,7 @@ class Banner extends Component {
   };
   slide32OptionChange = e => {
     this.setState({
-      affordAggregatedMonthlyPayment: e.target.value
+      moreInUnsecuredDebt: e.target.value
     });
     const classes = document.getElementsByClassName("slide32-radio");
     var i;
@@ -1182,7 +1207,21 @@ class Banner extends Component {
 
     this.handleNext();
   };
-  slide33finishFormOnClick = () => {
+  slide33OptionChange = e => {
+    this.setState({
+      affordAggregatedMonthlyPayment: e.target.value
+    });
+    const classes = document.getElementsByClassName("slide33-radio");
+    var i;
+    for (i = 0; i < classes.length; i++) {
+      classes[i].classList.remove("active");
+    }
+    const id = e.target.id;
+    document.getElementById(id + "-level").classList.add("active");
+
+    this.handleNext();
+  };
+  slide34finishFormOnClick = () => {
     this.setState({
       popup: true
     });
@@ -1229,13 +1268,13 @@ class Banner extends Component {
       }
     }, 2500);
   }
-  slide34ClickToContinueOnClick = () => {
+  slide35ClickToContinueOnClick = () => {
     this.setState({
       popup: true
     });
     this.popupAction("offer");
   }
-  slide34noThanksOnClick = () => {
+  slide35noThanksOnClick = () => {
     this.setState({
       popupNoThankYou: true
     });
@@ -1295,6 +1334,24 @@ class Banner extends Component {
     //Datepicker keyboard disable in mobile
     const datePicker = document.getElementById("nextPayDate");
     datePicker.setAttribute("readOnly", true);
+    //password reset
+    this.passwordResetOnClick();
+    if (this.state.passwordSuggestionWrapper) {
+      document.body.addEventListener('click', this.bodyOnClick);
+    }
+
+
+    this.setSlider();
+  }
+
+  bodyOnClick = e => {
+    var class_name = e.target.classList[0];
+    if ((class_name === "password-suggestion") || (class_name === "ps-password") || (class_name === "ps-reset") || (class_name === "ps-label")) {
+    } else {
+      this.setState({
+        passwordSuggestionWrapper: false
+      });
+    }
   }
   leading0 = (num) => {
     return num < 10 ? '0' + num : num;
@@ -1317,13 +1374,22 @@ class Banner extends Component {
     }
   }
   escFunction = (event) => {
-    if (event.keyCode == 9) {
+    if (event.keyCode === 9) {
       event.preventDefault();
     }
   }
+  radioOnChange = (e, v, n) => {
+    this.setState({
+      [n]: v
+    });
+    console.log('n', n)
+    localStorage.setItem('' + n, v);
+    this.handleNext(e);
+    console.log("loanAmountOnChange this.state", this.state);
+  }
+
   render() {
     console.log("this.state", this.state);
-
     const progress = this.state.progressValue;
     const progressView = this.state.progressView;
     const emailError = this.state.emailError;
@@ -1372,6 +1438,13 @@ class Banner extends Component {
     const popupOffer = this.state.popupOffer;
     const minutes = this.state.minutes;
     const cancelTimer = this.state.cancelTimer;
+
+    const password = this.state.password;
+    const passwordError = this.state.passwordError;
+    const passwordInputStyle = this.state.passwordInputStyle;
+    const passwordSuggestion = this.state.passwordSuggestion;
+    const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
+
     return (
       <div className="banner-section" >
         <Container >
@@ -1390,7 +1463,7 @@ class Banner extends Component {
             <Col sm="8" >
               <div className="apply-form-container" >
                 <Form className="apply-form" >
-                  <div className="steps " id="slide1" >
+                  <div className="steps active" id="slide1" >
                     <div className="welcome-text" >
                       You can get a loan between <strong>$100 and $35,000</strong> for any reason, whether it be to pay for a vehicle repair,
                       home improvement expense, or even a vacation
@@ -1399,97 +1472,17 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         How much do you need?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide1-radio"
-                          id="slide1-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide1-radio1"
-                            value="$100 - $500"
-                            id="slide1-radio1"
-                            checked={this.state.loanAmount === "option1"}
-                            onChange={this.slide1OptionChange}
-                            onClick={this.slide1OptionChange}
-                          />
-                          $100 - $500
-                        </Label>
-                        <Label
-                          check
-                          className="slide1-radio "
-                          id="slide1-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide1-radio1"
-                            value="$500 - $1000"
-                            id="slide1-radio2"
-                            checked={this.state.loanAmount === "option2"}
-                            onChange={this.slide1OptionChange}
-                            onClick={this.slide1OptionChange}
-
-                          />
-                          $500 - $1000
-                        </Label>
-                        <Label
-                          check
-                          className="slide1-radio "
-                          id="slide1-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide1-radio1"
-                            value="$1000 - $2500"
-                            id="slide1-radio3"
-                            checked={this.state.loanAmount === "option3"}
-                            onChange={this.slide1OptionChange}
-                            onClick={this.slide1OptionChange}
-
-                          />
-                          $1000 - $2500
-                        </Label>
-                        <Label
-                          check
-                          className="slide1-radio "
-                          id="slide1-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide1-radio1"
-                            value="$2500 - $5000"
-                            id="slide1-radio4"
-                            checked={this.state.loanAmount === "option4"}
-                            onChange={this.slide1OptionChange}
-                            onClick={this.slide1OptionChange}
-
-                          />
-                          $2500 - $5000
-                        </Label>
-                        <Label
-                          check
-                          className="slide1-radio "
-                          id="slide1-radio5-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide1-radio1"
-                            value="$5000 and over"
-                            id="slide1-radio5"
-                            checked={this.state.loanAmount === "option4"}
-                            onChange={this.slide1OptionChange}
-                            onClick={this.slide1OptionChange}
-
-                          />
-                          $5000 and over
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio1"].value}
+                        name={radioData[0]["radio1"].name}
+                        id={radioData[0]["radio1"].id}
+                        slideName={radioData[0]["radio1"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide2">
                     <Button
-                      id="backButton"
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1499,73 +1492,19 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         How long do you need to pay it back?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide2-radio"
-                          id="slide2-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide2-radio1"
-                            value="1 - 3 Months"
-                            id="slide2-radio1"
-                            checked={this.state.loanDuration === "option1"}
-                            onChange={this.slide2OptionChange}
-                          />
-                          1 - 3 Months
-                        </Label>
-                        <Label
-                          check
-                          className="slide2-radio"
-                          id="slide2-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide2-radio1"
-                            value="3 - 6 Months"
-                            id="slide2-radio2"
-                            checked={this.state.loanDuration === "option2"}
-                            onChange={this.slide2OptionChange}
-                          />
-                          3 - 6 Months
-                        </Label>
-                        <Label
-                          check
-                          className="slide2-radio"
-                          id="slide2-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide2-radio1"
-                            value="6 - 12 Months"
-                            id="slide2-radio3"
-                            checked={this.state.loanDuration === "option3"}
-                            onChange={this.slide2OptionChange}
-                          />
-                          6 - 12 Months
-                        </Label>
-                        <Label
-                          check
-                          className="slide2-radio"
-                          id="slide2-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide2-radio1"
-                            value="1 - 2 Years"
-                            id="slide2-radio4"
-                            checked={this.state.loanDuration === "option4"}
-                            onChange={this.slide2OptionChange}
-                          />
-                          1 - 2 Years
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio2"].value}
+                        name={radioData[0]["radio2"].name}
+                        id={radioData[0]["radio2"].id}
+                        slideName={radioData[0]["radio2"].slideName}
+                      />
+
                     </div>
                   </div>
-                  <div className="steps active" id="slide3">
+                  <div className="steps " id="slide3">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1614,7 +1553,64 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide4">
                     <Button
-                      id="backButton"
+
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
+                    <div className="inner-steps">
+                      <h3 id="" className="title current">
+                        Create a Password
+                      </h3>
+
+                      <FormGroup >
+                        <Label for="password" className="bold">
+                          Password
+                        </Label>
+                        <Input
+                          type="password"
+                          name="password"
+                          id="password"
+                          autoComplete="nope"
+                          placeholder="Password"
+                          onChange={this.slide4PasswordOnChange}
+                          onClick={this.slide4PasswordOnClick}
+                          value={password}
+                          className={passwordInputStyle}
+                        />
+                        {passwordError !== "" ? (
+                          <FormFeedback style={{ display: "block" }}>
+                            {passwordError}
+                          </FormFeedback>
+                        ) : (
+                            ""
+                          )}
+                      </FormGroup>
+
+                      {passwordSuggestionWrapper ? (
+                        <div className="password-suggestion">
+                          <span className="ps-password" onClick={this.passwordMuskOnClick} >{passwordSuggestion}</span>
+                          <span className="ps-reset" onClick={this.passwordResetOnClick}></span>
+                          <span className="ps-label">Suggested</span>
+                        </div>
+                      ) : (
+                          ""
+                        )}
+
+                      <Button
+                        onClick={this.slide4CreatePasswordNextOnClick}
+                        type="button"
+                        color="primary"
+                        className="mt15"
+                      >
+                        Next
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="steps " id="slide5">
+                    <Button
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1639,7 +1635,7 @@ class Banner extends Component {
                           id="firstName"
                           autoComplete="nope"
                           placeholder="First Name"
-                          onChange={this.slide4FirstNameOnChange}
+                          onChange={this.slide5FirstNameOnChange}
                           className={firstNameInputStyle}
 
                         />
@@ -1661,7 +1657,7 @@ class Banner extends Component {
                           id="lastName"
                           autoComplete="nope"
                           placeholder="Last Name"
-                          onChange={this.slide4LastNameOnChange}
+                          onChange={this.slide5LastNameOnChange}
                           className={lastNameInputStyle}
 
                         />
@@ -1675,7 +1671,7 @@ class Banner extends Component {
                       </FormGroup>
 
                       <Button
-                        onClick={this.slide4FirstNameLastNameOnClick}
+                        onClick={this.slide5FirstNameLastNameOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -1685,9 +1681,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide5">
+                  <div className="steps " id="slide6">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1709,7 +1705,7 @@ class Banner extends Component {
                         <NumberFormat
                           id="contactNumber"
                           placeholder="xxx-xxx-xxxx"
-                          onValueChange={this.slide5ContactNumberOnChange}
+                          onValueChange={this.slide6ContactNumberOnChange}
                           format="###-###-####"
                           className={
                             "form-control " +
@@ -1734,7 +1730,7 @@ class Banner extends Component {
                         subsidiaries, agents and/or partners**
                       </small>
                       <Button
-                        onClick={this.slide5ContactNumberOnClick}
+                        onClick={this.slide6ContactNumberOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -1743,9 +1739,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps" id="slide6">
+                  <div className="steps" id="slide7">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1755,58 +1751,18 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         Contact Time
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide6-radio"
-                          id="slide6-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide6-radio1"
-                            value="Morning"
-                            id="slide6-radio1"
-                            checked={this.state.contactTime === "option1"}
-                            onChange={this.slide6OptionChange}
-                          />
-                          Morning
-                        </Label>
-                        <Label
-                          check
-                          className="slide6-radio"
-                          id="slide6-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide6-radio1"
-                            value="Noon"
-                            id="slide6-radio2"
-                            checked={this.state.contactTime === "option2"}
-                            onChange={this.slide6OptionChange}
-                          />
-                          Noon
-                        </Label>
-                        <Label
-                          check
-                          className="slide6-radio"
-                          id="slide6-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide6-radio1"
-                            value="Night"
-                            id="slide6-radio3"
-                            checked={this.state.contactTime === "option3"}
-                            onChange={this.slide6OptionChange}
-                          />
-                          Night
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio3"].value}
+                        name={radioData[0]["radio3"].name}
+                        id={radioData[0]["radio3"].id}
+                        slideName={radioData[0]["radio3"].slideName}
+                      />
                     </div>
                   </div>
-                  <div className="steps" id="slide7">
+                  <div className="steps" id="slide8">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -1826,7 +1782,7 @@ class Banner extends Component {
                               type="select"
                               name="month"
                               id="month"
-                              onChange={this.slide7MonthOnChange}
+                              onChange={this.slide8MonthOnChange}
                               className={monthInputStyle}
                             >
                               <option value="">Choose</option>
@@ -1860,7 +1816,7 @@ class Banner extends Component {
                               type="select"
                               name="day"
                               id="day"
-                              onChange={this.slide7DayOnChange}
+                              onChange={this.slide8DayOnChange}
                               className={dayInputStyle}
                             >
                               <option value="">Choose</option>
@@ -1913,7 +1869,7 @@ class Banner extends Component {
                               type="select"
                               name="year"
                               id="year"
-                              onChange={this.slide7YearOnChange}
+                              onChange={this.slide8YearOnChange}
                               className={yearInputStyle}
                             >
                               <option value="">Choose</option>
@@ -2012,7 +1968,7 @@ class Banner extends Component {
                       </FormGroup>
 
                       <Button
-                        onClick={this.slide7DOBOnClick}
+                        onClick={this.slide8DOBOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2021,9 +1977,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps" id="slide8">
+                  <div className="steps" id="slide9">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2033,43 +1989,18 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         Are you active military?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide8-radio"
-                          id="slide8-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide8-radio1"
-                            value="Yes"
-                            id="slide8-radio1"
-                            checked={this.state.activeMilitary === "option1"}
-                            onChange={this.slide8OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide8-radio"
-                          id="slide8-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide8-radio1"
-                            value="No"
-                            id="slide8-radio2"
-                            checked={this.state.activeMilitary === "option2"}
-                            onChange={this.slide8OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio4"].value}
+                        name={radioData[0]["radio4"].name}
+                        id={radioData[0]["radio4"].id}
+                        slideName={radioData[0]["radio4"].slideName}
+                      />
                     </div>
                   </div>
-                  <div className="steps" id="slide9">
+                  <div className="steps" id="slide10">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2092,7 +2023,7 @@ class Banner extends Component {
                           name="zipCode"
                           id="zipCode"
                           placeholder="Zip Code"
-                          onChange={this.slide9zipCodeOnChange}
+                          onChange={this.slide10zipCodeOnChange}
                           className={zipCodeInputStyle}
                         />
                         {zipCodeError !== "" ? (
@@ -2105,7 +2036,7 @@ class Banner extends Component {
                       </FormGroup>
 
                       <Button
-                        onClick={this.slide9zipCodeOnClick}
+                        onClick={this.slide10zipCodeOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2114,9 +2045,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide10">
+                  <div className="steps " id="slide11">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2137,7 +2068,7 @@ class Banner extends Component {
                               name="streetAddress"
                               id="streetAddress"
                               placeholder="Street Address"
-                              onChange={this.slide10streetAddressOnChange}
+                              onChange={this.slide11streetAddressOnChange}
                               className={streetAddressInputStyle}
                             />
                             {streetAddressError !== "" ? (
@@ -2159,7 +2090,7 @@ class Banner extends Component {
                               name="city"
                               id="city"
                               placeholder="City"
-                              onChange={this.slide10cityOnChange}
+                              onChange={this.slide11cityOnChange}
                               className={cityInputStyle}
                             />
                             {cityError !== "" ? (
@@ -2178,7 +2109,7 @@ class Banner extends Component {
                               type="select"
                               name="state"
                               id="state"
-                              onChange={this.slide10stateOnChange}
+                              onChange={this.slide11stateOnChange}
                               className={stateInputStyle}
                             >
                               <option value="">Select</option>
@@ -2247,7 +2178,7 @@ class Banner extends Component {
                       </FormGroup>
 
                       <Button
-                        onClick={this.slide10HomeAddressOnClick}
+                        onClick={this.slide11HomeAddressOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2256,9 +2187,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide11">
+                  <div className="steps " id="slide12">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2268,88 +2199,18 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         How long have you lived here?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide11-radio"
-                          id="slide11-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide11-radio1"
-                            value="1 Year or less"
-                            id="slide11-radio1"
-                            checked={this.state.howLongLived === "option1"}
-                            onChange={this.slide11OptionChange}
-                          />
-                          1 Year or less
-                        </Label>
-                        <Label
-                          check
-                          className="slide11-radio"
-                          id="slide11-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide11-radio1"
-                            value="2 Years"
-                            id="slide11-radio2"
-                            checked={this.state.howLongLived === "option2"}
-                            onChange={this.slide11OptionChange}
-                          />
-                          2 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide11-radio"
-                          id="slide11-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide11-radio1"
-                            value="3 Years"
-                            id="slide11-radio3"
-                            checked={this.state.howLongLived === "option3"}
-                            onChange={this.slide11OptionChange}
-                          />
-                          3 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide11-radio"
-                          id="slide11-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide11-radio1"
-                            value="4 Years"
-                            id="slide11-radio4"
-                            checked={this.state.howLongLived === "option4"}
-                            onChange={this.slide11OptionChange}
-                          />
-                          4 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide11-radio"
-                          id="slide11-radio5-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide11-radio1"
-                            value="5 Years and more"
-                            id="slide11-radio5"
-                            checked={this.state.howLongLived === "option5"}
-                            onChange={this.slide11OptionChange}
-                          />
-                          5 Years and more
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio5"].value}
+                        name={radioData[0]["radio5"].name}
+                        id={radioData[0]["radio5"].id}
+                        slideName={radioData[0]["radio5"].slideName}
+                      />
                     </div>
                   </div>
-                  <div className="steps " id="slide12">
+                  <div className="steps " id="slide13">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2359,43 +2220,18 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         Do you own your home?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide12-radio"
-                          id="slide12-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide12-radio1"
-                            value="Yes"
-                            id="slide12-radio1"
-                            checked={this.state.ownYourHome === "option1"}
-                            onChange={this.slide12OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide12-radio"
-                          id="slide12-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide12-radio1"
-                            value="No"
-                            id="slide12-radio2"
-                            checked={this.state.ownYourHome === "option2"}
-                            onChange={this.slide12OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio6"].value}
+                        name={radioData[0]["radio6"].name}
+                        id={radioData[0]["radio6"].id}
+                        slideName={radioData[0]["radio6"].slideName}
+                      />
                     </div>
                   </div>
-                  <div className="steps" id="slide13">
+                  <div className="steps" id="slide14">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2408,40 +2244,40 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide13-radio"
-                          id="slide13-radio1-level"
+                          className="slide14-radio"
+                          id="slide14-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide13-radio1"
+                            name="slide14-radio1"
                             value="Employment"
-                            id="slide13-radio1"
+                            id="slide14-radio1"
                             checked={this.state.incomeSource === "option1"}
-                            onChange={this.slide13OptionChange}
+                            onChange={this.slide14OptionChange}
                           />
                           Employment
                         </Label>
                         <Label
                           check
-                          className="slide13-radio"
-                          id="slide13-radio2-level"
+                          className="slide14-radio"
+                          id="slide14-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide13-radio1"
+                            name="slide14-radio1"
                             value="Benefits"
-                            id="slide13-radio2"
+                            id="slide14-radio2"
                             checked={this.state.incomeSource === "option2"}
-                            onChange={this.slide13OptionChange}
+                            onChange={this.slide14OptionChange}
                           />
                           Benefits
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide14">
+                  <div className="steps " id="slide15">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2454,85 +2290,85 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide14-radio"
-                          id="slide14-radio1-level"
+                          className="slide15-radio"
+                          id="slide15-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide14-radio1"
+                            name="slide15-radio1"
                             value="1 Year or less"
-                            id="slide14-radio1"
+                            id="slide15-radio1"
                             checked={this.state.timeEmployed === "option1"}
-                            onChange={this.slide14OptionChange}
+                            onChange={this.slide15OptionChange}
                           />
                           1 Year or less
                         </Label>
                         <Label
                           check
-                          className="slide14-radio"
-                          id="slide14-radio2-level"
+                          className="slide15-radio"
+                          id="slide15-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide14-radio1"
+                            name="slide15-radio1"
                             value="2 Years"
-                            id="slide14-radio2"
+                            id="slide15-radio2"
                             checked={this.state.timeEmployed === "option2"}
-                            onChange={this.slide14OptionChange}
+                            onChange={this.slide15OptionChange}
                           />
                           2 Years
                         </Label>
                         <Label
                           check
-                          className="slide14-radio"
-                          id="slide14-radio3-level"
+                          className="slide15-radio"
+                          id="slide15-radio3-level"
                         >
                           <Input
                             type="radio"
-                            name="slide14-radio1"
+                            name="slide15-radio1"
                             value="3 Years"
-                            id="slide14-radio3"
+                            id="slide15-radio3"
                             checked={this.state.timeEmployed === "option3"}
-                            onChange={this.slide14OptionChange}
+                            onChange={this.slide15OptionChange}
                           />
                           3 Years
                         </Label>
                         <Label
                           check
-                          className="slide14-radio"
-                          id="slide14-radio4-level"
+                          className="slide15-radio"
+                          id="slide15-radio4-level"
                         >
                           <Input
                             type="radio"
-                            name="slide14-radio1"
+                            name="slide15-radio1"
                             value="4 Years"
-                            id="slide14-radio4"
+                            id="slide15-radio4"
                             checked={this.state.timeEmployed === "option4"}
-                            onChange={this.slide14OptionChange}
+                            onChange={this.slide15OptionChange}
                           />
                           4 Years
                         </Label>
                         <Label
                           check
-                          className="slide14-radio"
-                          id="slide14-radio5-level"
+                          className="slide15-radio"
+                          id="slide15-radio5-level"
                         >
                           <Input
                             type="radio"
-                            name="slide14-radio1"
+                            name="slide15-radio1"
                             value="5 Years and more"
-                            id="slide14-radio5"
+                            id="slide15-radio5"
                             checked={this.state.timeEmployed === "option5"}
-                            onChange={this.slide14OptionChange}
+                            onChange={this.slide15OptionChange}
                           />
                           5 Years and more
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide15">
+                  <div className="steps " id="slide16">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2545,70 +2381,70 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide15-radio"
-                          id="slide15-radio1-level"
+                          className="slide16-radio"
+                          id="slide16-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide15-radio1"
+                            name="slide16-radio1"
                             value="Weekly"
-                            id="slide15-radio1"
+                            id="slide16-radio1"
                             checked={this.state.timeEmployed === "option1"}
-                            onChange={this.slide15OptionChange}
+                            onChange={this.slide16OptionChange}
                           />
                           Weekly
                         </Label>
                         <Label
                           check
-                          className="slide15-radio"
-                          id="slide15-radio2-level"
+                          className="slide16-radio"
+                          id="slide16-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide15-radio1"
+                            name="slide16-radio1"
                             value="Bi-Weekly"
-                            id="slide15-radio2"
+                            id="slide16-radio2"
                             checked={this.state.timeEmployed === "option2"}
-                            onChange={this.slide15OptionChange}
+                            onChange={this.slide16OptionChange}
                           />
                           Bi-Weekly
                         </Label>
                         <Label
                           check
-                          className="slide15-radio"
-                          id="slide15-radio3-level"
+                          className="slide16-radio"
+                          id="slide16-radio3-level"
                         >
                           <Input
                             type="radio"
-                            name="slide15-radio1"
+                            name="slide16-radio1"
                             value="Monthly"
-                            id="slide15-radio3"
+                            id="slide16-radio3"
                             checked={this.state.timeEmployed === "option3"}
-                            onChange={this.slide15OptionChange}
+                            onChange={this.slide16OptionChange}
                           />
                           Monthly
                         </Label>
                         <Label
                           check
-                          className="slide15-radio"
-                          id="slide15-radio4-level"
+                          className="slide16-radio"
+                          id="slide16-radio4-level"
                         >
                           <Input
                             type="radio"
-                            name="slide15-radio1"
+                            name="slide16-radio1"
                             value="Semi-Monthly"
-                            id="slide15-radio4"
+                            id="slide16-radio4"
                             checked={this.state.timeEmployed === "option4"}
-                            onChange={this.slide15OptionChange}
+                            onChange={this.slide16OptionChange}
                           />
                           Semi-Monthly
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps" id="slide16">
+                  <div className="steps" id="slide17">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2623,16 +2459,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio1-level"
+                              className="slide17-radio"
+                              id="slide17-radio1-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="Less than $1500"
-                                id="slide16-radio1"
+                                id="slide17-radio1"
                                 checked={this.state.monthlyGrossIncome === "option1"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               Less than $1500
                             </Label>
@@ -2640,16 +2476,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio2-level"
+                              className="slide17-radio"
+                              id="slide17-radio2-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$1500 - $2000"
-                                id="slide16-radio2"
+                                id="slide17-radio2"
                                 checked={this.state.monthlyGrossIncome === "option2"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $1500 - $2000
                             </Label>
@@ -2659,16 +2495,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio3-level"
+                              className="slide17-radio"
+                              id="slide17-radio3-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$2000 - $2500"
-                                id="slide16-radio3"
+                                id="slide17-radio3"
                                 checked={this.state.monthlyGrossIncome === "option3"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $2000 - $2500
                         </Label>
@@ -2676,16 +2512,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio4-level"
+                              className="slide17-radio"
+                              id="slide17-radio4-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$2500 - $3000"
-                                id="slide16-radio4"
+                                id="slide17-radio4"
                                 checked={this.state.monthlyGrossIncome === "option4"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $2500 - $3000
                         </Label>
@@ -2695,16 +2531,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio5-level"
+                              className="slide17-radio"
+                              id="slide17-radio5-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$3000 - $3500"
-                                id="slide16-radio5"
+                                id="slide17-radio5"
                                 checked={this.state.monthlyGrossIncome === "option5"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $3000 - $3500
                           </Label>
@@ -2712,16 +2548,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio6-level"
+                              className="slide17-radio"
+                              id="slide17-radio6-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$3500 - $4000"
-                                id="slide16-radio6"
+                                id="slide17-radio6"
                                 checked={this.state.monthlyGrossIncome === "option6"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $3500 - $4000
                           </Label>
@@ -2731,16 +2567,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio7-level"
+                              className="slide17-radio"
+                              id="slide17-radio7-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$4000 - $4500"
-                                id="slide16-radio7"
+                                id="slide17-radio7"
                                 checked={this.state.monthlyGrossIncome === "option7"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $4000 - $4500
                           </Label>
@@ -2748,16 +2584,16 @@ class Banner extends Component {
                           <Col sm="6">
                             <Label
                               check
-                              className="slide16-radio"
-                              id="slide16-radio8-level"
+                              className="slide17-radio"
+                              id="slide17-radio8-level"
                             >
                               <Input
                                 type="radio"
-                                name="slide16-radio1"
+                                name="slide17-radio1"
                                 value="$4500 - $5000"
-                                id="slide16-radio8"
+                                id="slide17-radio8"
                                 checked={this.state.monthlyGrossIncome === "option8"}
-                                onChange={this.slide16OptionChange}
+                                onChange={this.slide17OptionChange}
                               />
                               $4500 - $5000
                           </Label>
@@ -2766,9 +2602,9 @@ class Banner extends Component {
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide17">
+                  <div className="steps " id="slide18">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2788,7 +2624,7 @@ class Banner extends Component {
                           placeholder="Next Pay Date"
                           className={nextPayDateInputStyle}
                           selected={this.state.nextPayDate}
-                          onChange={this.slide17nextPayDateOnChange}
+                          onChange={this.slide18nextPayDateOnChange}
                           autoComplete="off"
                         />
                         {nextPayDateError !== "" ? (
@@ -2800,7 +2636,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide17nextPayDateOnClick}
+                        onClick={this.slide18nextPayDateOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2809,9 +2645,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps" id="slide18">
+                  <div className="steps" id="slide19">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2833,7 +2669,7 @@ class Banner extends Component {
                           name="employerName"
                           id="employerName"
                           placeholder="Employer Name"
-                          onChange={this.slide18employerNameOnChange}
+                          onChange={this.slide19employerNameOnChange}
                           className={employerNameInputStyle}
                         />
                         {employerNameError !== "" ? (
@@ -2845,7 +2681,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide18employerNameOnClick}
+                        onClick={this.slide19employerNameOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2854,9 +2690,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide19">
+                  <div className="steps " id="slide20">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2876,7 +2712,7 @@ class Banner extends Component {
                         <NumberFormat
                           id="employerPhoneNumber"
                           placeholder="xxx-xxx-xxxx"
-                          onValueChange={this.slide19employerPhoneNumberOnChange}
+                          onValueChange={this.slide20employerPhoneNumberOnChange}
                           format="###-###-####"
                           className={
                             "form-control " +
@@ -2894,7 +2730,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide19employerPhoneNumberOnClick}
+                        onClick={this.slide20employerPhoneNumberOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2903,9 +2739,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide20">
+                  <div className="steps " id="slide21">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2927,7 +2763,7 @@ class Banner extends Component {
                           name="driversLicenseOrStateID"
                           id="driversLicenseOrStateID"
                           placeholder="Drivers license or State ID"
-                          onChange={this.slide20driversLicenseOrStateIDOnChange}
+                          onChange={this.slide21driversLicenseOrStateIDOnChange}
                           className={driversLicenseOrStateIDInputStyle}
                         />
                         {driversLicenseOrStateIDError !== "" ? (
@@ -2939,7 +2775,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide20driversLicenseOrStateIDOnClick}
+                        onClick={this.slide21driversLicenseOrStateIDOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -2948,9 +2784,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide21">
+                  <div className="steps " id="slide22">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -2971,7 +2807,7 @@ class Banner extends Component {
                           type="select"
                           name="licenseState"
                           id="licenseState"
-                          onChange={this.slide21licenseStateOnChange}
+                          onChange={this.slide22licenseStateOnChange}
                           className={licenseStateInputStyle}
                         >
                           <option value="" >Select</option>
@@ -3037,7 +2873,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide21licenseStateOnClick}
+                        onClick={this.slide22licenseStateOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3046,9 +2882,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide22">
+                  <div className="steps " id="slide23">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3062,25 +2898,6 @@ class Banner extends Component {
                         Lenders use your social security number to verify your identity. It is vital that you enter your valid social security number. Lenders will reject applicants whose information they cannot verify.
                       </p>
                       <FormGroup>
-                        {/* <Label for="socialSecurityNumber" className="bold">
-                          Social Security Number
-                        </Label>
-                        <Input
-                          type="text"
-                          name="socialSecurityNumber"
-                          id="socialSecurityNumber"
-                          placeholder="Social Security Number"
-                          onChange={this.slide22socialSecurityNumberOnChange}
-                          className={socialSecurityNumberInputStyle}
-                        />
-                        {socialSecurityNumberError !== "" ? (
-                          <FormFeedback style={{ display: "block" }}>
-                            {socialSecurityNumberError}
-                          </FormFeedback>
-                        ) : (
-                            ""
-                          )} */}
-
                         <InputGroup className={socialSecurityNumberInputStyle}>
                           <Label for="email">Please enter the last 4 digits of your SSN <span className="tooltip-icon" id={"Tooltip-" + this.state.tooltips[0].id}>?</span> </Label>
                           <TooltipItem key={this.state.tooltips[0].id} item={this.state.tooltips[0].text} id={this.state.tooltips[0].id} />
@@ -3091,7 +2908,7 @@ class Banner extends Component {
                               id="socialSecurityNumber"
                               autoComplete="nope"
                               placeholder="xxxx"
-                              onChange={this.slide22socialSecurityNumberOnChange}
+                              onChange={this.slide23socialSecurityNumberOnChange}
                             />
                             <InputGroupAddon addonType="prepend">
                               <span className="password-icon"></span>
@@ -3109,7 +2926,7 @@ class Banner extends Component {
 
                       </FormGroup>
                       <Button
-                        onClick={this.slide22socialSecurityNumberOnClick}
+                        onClick={this.slide23socialSecurityNumberOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3118,9 +2935,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide23">
+                  <div className="steps " id="slide24">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3146,7 +2963,7 @@ class Banner extends Component {
                           name="ABARoutingNumber"
                           id="ABARoutingNumber"
                           placeholder="ABA Routing Number"
-                          onChange={this.slide23ABARoutingNumberOnChange}
+                          onChange={this.slide24ABARoutingNumberOnChange}
                           className={ABARoutingNumberInputStyle}
                         />
                         {ABARoutingNumberError !== "" ? (
@@ -3158,7 +2975,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide23ABARoutingNumberOnClick}
+                        onClick={this.slide24ABARoutingNumberOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3167,9 +2984,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide24">
+                  <div className="steps " id="slide25">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3192,7 +3009,7 @@ class Banner extends Component {
                           name="bankName"
                           id="bankName"
                           placeholder="Bank Name"
-                          onChange={this.slide24bankNameOnChange}
+                          onChange={this.slide25bankNameOnChange}
                           className={bankNameInputStyle}
                         />
                         {bankNameError !== "" ? (
@@ -3215,7 +3032,7 @@ class Banner extends Component {
                           name="bankAccountNumber"
                           id="bankAccountNumber"
                           placeholder="Bank Account Number"
-                          onChange={this.slide24bankAccountNumberOnChange}
+                          onChange={this.slide25bankAccountNumberOnChange}
                           className={bankAccountNumberInputStyle}
                         />
                         {bankAccountNumberError !== "" ? (
@@ -3227,7 +3044,7 @@ class Banner extends Component {
                           )}
                       </FormGroup>
                       <Button
-                        onClick={this.slide24bankingInformationOnClick}
+                        onClick={this.slide25bankingInformationOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3236,9 +3053,9 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide25">
+                  <div className="steps " id="slide26">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3252,40 +3069,40 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide25-radio"
-                          id="slide25-radio1-level"
+                          className="slide26-radio"
+                          id="slide26-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide25-radio1"
+                            name="slide26-radio1"
                             value="Yes"
-                            id="slide25-radio1"
+                            id="slide26-radio1"
                             checked={this.state.directDeposit === "option1"}
-                            onChange={this.slide25OptionChange}
+                            onChange={this.slide26OptionChange}
                           />
                           Yes
                         </Label>
                         <Label
                           check
-                          className="slide25-radio"
-                          id="slide25-radio2-level"
+                          className="slide26-radio"
+                          id="slide26-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide25-radio1"
+                            name="slide26-radio1"
                             value="No"
-                            id="slide25-radio2"
+                            id="slide26-radio2"
                             checked={this.state.directDeposit === "option2"}
-                            onChange={this.slide25OptionChange}
+                            onChange={this.slide26OptionChange}
                           />
                           No
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide26">
+                  <div className="steps " id="slide27">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3298,85 +3115,85 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide26-radio"
-                          id="slide26-radio1-level"
+                          className="slide27-radio"
+                          id="slide27-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide26-radio1"
+                            name="slide27-radio1"
                             value="One Year or less"
-                            id="slide26-radio1"
+                            id="slide27-radio1"
                             checked={this.state.lengthOfBankAccount === "option1"}
-                            onChange={this.slide26OptionChange}
+                            onChange={this.slide27OptionChange}
                           />
                           One Year or less
                         </Label>
                         <Label
                           check
-                          className="slide26-radio"
-                          id="slide26-radio2-level"
+                          className="slide27-radio"
+                          id="slide27-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide26-radio1"
+                            name="slide27-radio1"
                             value="2 Years"
-                            id="slide26-radio2"
+                            id="slide27-radio2"
                             checked={this.state.lengthOfBankAccount === "option2"}
-                            onChange={this.slide26OptionChange}
+                            onChange={this.slide27OptionChange}
                           />
                           2 Years
                         </Label>
                         <Label
                           check
-                          className="slide26-radio"
-                          id="slide26-radio3-level"
+                          className="slide27-radio"
+                          id="slide27-radio3-level"
                         >
                           <Input
                             type="radio"
-                            name="slide26-radio1"
+                            name="slide27-radio1"
                             value="3 Years"
-                            id="slide26-radio3"
+                            id="slide27-radio3"
                             checked={this.state.lengthOfBankAccount === "option3"}
-                            onChange={this.slide26OptionChange}
+                            onChange={this.slide27OptionChange}
                           />
                           3 Years
                         </Label>
                         <Label
                           check
-                          className="slide26-radio"
-                          id="slide26-radio4-level"
+                          className="slide27-radio"
+                          id="slide27-radio4-level"
                         >
                           <Input
                             type="radio"
-                            name="slide26-radio1"
+                            name="slide27-radio1"
                             value="4 Years"
-                            id="slide26-radio4"
+                            id="slide27-radio4"
                             checked={this.state.lengthOfBankAccount === "option4"}
-                            onChange={this.slide26OptionChange}
+                            onChange={this.slide27OptionChange}
                           />
                           4 Years
                         </Label>
                         <Label
                           check
-                          className="slide26-radio"
-                          id="slide26-radio5-level"
+                          className="slide27-radio"
+                          id="slide27-radio5-level"
                         >
                           <Input
                             type="radio"
-                            name="slide26-radio1"
+                            name="slide27-radio1"
                             value="5 Years"
-                            id="slide26-radio5"
+                            id="slide27-radio5"
                             checked={this.state.lengthOfBankAccount === "option5"}
-                            onChange={this.slide26OptionChange}
+                            onChange={this.slide27OptionChange}
                           />
                           5 Years
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide27">
+                  <div className="steps " id="slide28">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3390,40 +3207,40 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide27-radio"
-                          id="slide27-radio1-level"
+                          className="slide28-radio"
+                          id="slide28-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide27-radio1"
+                            name="slide28-radio1"
                             value="Checking"
-                            id="slide27-radio1"
+                            id="slide28-radio1"
                             checked={this.state.bankAccountType === "option1"}
-                            onChange={this.slide27OptionChange}
+                            onChange={this.slide28OptionChange}
                           />
                           Checking
                         </Label>
                         <Label
                           check
-                          className="slide27-radio"
-                          id="slide27-radio2-level"
+                          className="slide28-radio"
+                          id="slide28-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide27-radio1"
+                            name="slide28-radio1"
                             value="Savings"
-                            id="slide27-radio2"
+                            id="slide28-radio2"
                             checked={this.state.bankAccountType === "option2"}
-                            onChange={this.slide27OptionChange}
+                            onChange={this.slide28OptionChange}
                           />
                           Savings
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide28">
+                  <div className="steps " id="slide29">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3436,85 +3253,85 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide28-radio"
-                          id="slide28-radio1-level"
+                          className="slide29-radio"
+                          id="slide29-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide28-radio1"
+                            name="slide29-radio1"
                             value="Excellent 700 +"
-                            id="slide28-radio1"
+                            id="slide29-radio1"
                             checked={this.state.lengthOfBankAccount === "option1"}
-                            onChange={this.slide28OptionChange}
+                            onChange={this.slide29OptionChange}
                           />
                           Excellent 700 +
                         </Label>
                         <Label
                           check
-                          className="slide28-radio"
-                          id="slide28-radio2-level"
+                          className="slide29-radio"
+                          id="slide29-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide28-radio1"
+                            name="slide29-radio1"
                             value="Good 600 - 700"
-                            id="slide28-radio2"
+                            id="slide29-radio2"
                             checked={this.state.lengthOfBankAccount === "option2"}
-                            onChange={this.slide28OptionChange}
+                            onChange={this.slide29OptionChange}
                           />
                           Good 600 - 700
                         </Label>
                         <Label
                           check
-                          className="slide28-radio"
-                          id="slide28-radio3-level"
+                          className="slide29-radio"
+                          id="slide29-radio3-level"
                         >
                           <Input
                             type="radio"
-                            name="slide28-radio1"
+                            name="slide29-radio1"
                             value="Fair 500 - 600"
-                            id="slide28-radio3"
+                            id="slide29-radio3"
                             checked={this.state.lengthOfBankAccount === "option3"}
-                            onChange={this.slide28OptionChange}
+                            onChange={this.slide29OptionChange}
                           />
                           Fair 500 - 600
                         </Label>
                         <Label
                           check
-                          className="slide28-radio"
-                          id="slide28-radio4-level"
+                          className="slide29-radio"
+                          id="slide29-radio4-level"
                         >
                           <Input
                             type="radio"
-                            name="slide28-radio1"
+                            name="slide29-radio1"
                             value="Poor < 500"
-                            id="slide28-radio4"
+                            id="slide29-radio4"
                             checked={this.state.lengthOfBankAccount === "option4"}
-                            onChange={this.slide28OptionChange}
+                            onChange={this.slide29OptionChange}
                           />
                           Poor &#60; 500
                         </Label>
                         <Label
                           check
-                          className="slide28-radio"
-                          id="slide28-radio5-level"
+                          className="slide29-radio"
+                          id="slide29-radio5-level"
                         >
                           <Input
                             type="radio"
-                            name="slide28-radio1"
+                            name="slide29-radio1"
                             value="not sure"
-                            id="slide28-radio5"
+                            id="slide29-radio5"
                             checked={this.state.lengthOfBankAccount === "option5"}
-                            onChange={this.slide28OptionChange}
+                            onChange={this.slide29OptionChange}
                           />
                           not sure
                         </Label>
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide29">
+                  <div className="steps " id="slide30">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3527,61 +3344,61 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide29-radio"
-                          id="slide29-radio1-level"
+                          className="slide30-radio"
+                          id="slide30-radio1-level"
                         >
                           <Input
                             type="radio"
-                            name="slide29-radio1"
+                            name="slide30-radio1"
                             value="Credit Card Debt Relief"
-                            id="slide29-radio1"
+                            id="slide30-radio1"
                             checked={this.state.loanReason === "option1"}
-                            onChange={this.slide29OptionChange}
+                            onChange={this.slide30OptionChange}
                           />
                           Credit Card Debt Relief
                         </Label>
                         <Label
                           check
-                          className="slide29-radio"
-                          id="slide29-radio2-level"
+                          className="slide30-radio"
+                          id="slide30-radio2-level"
                         >
                           <Input
                             type="radio"
-                            name="slide29-radio1"
+                            name="slide30-radio1"
                             value="Student Loan Relief"
-                            id="slide29-radio2"
+                            id="slide30-radio2"
                             checked={this.state.loanReason === "option2"}
-                            onChange={this.slide29OptionChange}
+                            onChange={this.slide30OptionChange}
                           />
                           Student Loan Relief
                         </Label>
                         <Label
                           check
-                          className="slide29-radio"
-                          id="slide29-radio3-level"
+                          className="slide30-radio"
+                          id="slide30-radio3-level"
                         >
                           <Input
                             type="radio"
-                            name="slide29-radio1"
+                            name="slide30-radio1"
                             value="Debt Consolidation"
-                            id="slide29-radio3"
+                            id="slide30-radio3"
                             checked={this.state.loanReason === "option3"}
-                            onChange={this.slide29OptionChange}
+                            onChange={this.slide30OptionChange}
                           />
                           Debt Consolidation
                         </Label>
                         <Label
                           check
-                          className="slide29-radio"
-                          id="slide29-radio4-level"
+                          className="slide30-radio"
+                          id="slide30-radio4-level"
                         >
                           <Input
                             type="radio"
-                            name="slide29-radio1"
+                            name="slide30-radio1"
                             value="Other"
-                            id="slide29-radio4"
+                            id="slide30-radio4"
                             checked={this.state.loanReason === "option4"}
-                            onChange={this.slide29OptionChange}
+                            onChange={this.slide30OptionChange}
                           />
                           Other
                         </Label>
@@ -3589,9 +3406,9 @@ class Banner extends Component {
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide30">
+                  <div className="steps " id="slide31">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3605,53 +3422,6 @@ class Banner extends Component {
                       <FormGroup>
                         <Label
                           check
-                          className="slide30-radio"
-                          id="slide30-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="Yes"
-                            id="slide30-radio1"
-                            checked={this.state.moreInCreditCardDebt === "option1"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide30-radio"
-                          id="slide30-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="No"
-                            id="slide30-radio2"
-                            checked={this.state.moreInCreditCardDebt === "option2"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
-                    </div>
-                  </div>
-                  <div className="steps " id="slide31">
-                    <Button
-                      id="backButton"
-                      type="button"
-                      color="primary"
-                      onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
-                    <div className="inner-steps">
-                      <h3 id="" className="title current">
-                        Do you have $10,000 or more in unsecured debt?
-                      </h3>
-                      <p>Give us an estimate, this will not affect your loan request</p>
-                      <FormGroup>
-                        <Label
-                          check
                           className="slide31-radio"
                           id="slide31-radio1-level"
                         >
@@ -3660,7 +3430,7 @@ class Banner extends Component {
                             name="slide31-radio1"
                             value="Yes"
                             id="slide31-radio1"
-                            checked={this.state.moreInUnsecuredDebt === "option1"}
+                            checked={this.state.moreInCreditCardDebt === "option1"}
                             onChange={this.slide31OptionChange}
                           />
                           Yes
@@ -3675,7 +3445,7 @@ class Banner extends Component {
                             name="slide31-radio1"
                             value="No"
                             id="slide31-radio2"
-                            checked={this.state.moreInUnsecuredDebt === "option2"}
+                            checked={this.state.moreInCreditCardDebt === "option2"}
                             onChange={this.slide31OptionChange}
                           />
                           No
@@ -3685,7 +3455,7 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide32">
                     <Button
-                      id="backButton"
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3693,8 +3463,9 @@ class Banner extends Component {
                     </Button>
                     <div className="inner-steps">
                       <h3 id="" className="title current">
-                        Can you afford an aggregated monthly payment of $250?
+                        Do you have $10,000 or more in unsecured debt?
                       </h3>
+                      <p>Give us an estimate, this will not affect your loan request</p>
                       <FormGroup>
                         <Label
                           check
@@ -3706,7 +3477,7 @@ class Banner extends Component {
                             name="slide32-radio1"
                             value="Yes"
                             id="slide32-radio1"
-                            checked={this.state.affordAggregatedMonthlyPayment === "option1"}
+                            checked={this.state.moreInUnsecuredDebt === "option1"}
                             onChange={this.slide32OptionChange}
                           />
                           Yes
@@ -3721,7 +3492,7 @@ class Banner extends Component {
                             name="slide32-radio1"
                             value="No"
                             id="slide32-radio2"
-                            checked={this.state.affordAggregatedMonthlyPayment === "option2"}
+                            checked={this.state.moreInUnsecuredDebt === "option2"}
                             onChange={this.slide32OptionChange}
                           />
                           No
@@ -3731,7 +3502,53 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide33">
                     <Button
-                      id="backButton"
+
+                      type="button"
+                      color="primary"
+                      onClick={this.handlePreview}
+                      className="preview-button">
+                    </Button>
+                    <div className="inner-steps">
+                      <h3 id="" className="title current">
+                        Can you afford an aggregated monthly payment of $250?
+                      </h3>
+                      <FormGroup>
+                        <Label
+                          check
+                          className="slide33-radio"
+                          id="slide33-radio1-level"
+                        >
+                          <Input
+                            type="radio"
+                            name="slide33-radio1"
+                            value="Yes"
+                            id="slide33-radio1"
+                            checked={this.state.affordAggregatedMonthlyPayment === "option1"}
+                            onChange={this.slide33OptionChange}
+                          />
+                          Yes
+                        </Label>
+                        <Label
+                          check
+                          className="slide33-radio"
+                          id="slide33-radio2-level"
+                        >
+                          <Input
+                            type="radio"
+                            name="slide33-radio1"
+                            value="No"
+                            id="slide33-radio2"
+                            checked={this.state.affordAggregatedMonthlyPayment === "option2"}
+                            onChange={this.slide33OptionChange}
+                          />
+                          No
+                        </Label>
+                      </FormGroup>
+                    </div>
+                  </div>
+                  <div className="steps " id="slide34">
+                    <Button
+
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
@@ -3751,7 +3568,7 @@ class Banner extends Component {
                         Lender.page, lenders, and other marketing partners to contact me at the information provided above via phone call, SMS/text message and/or email.
                       </p>
                       <Button
-                        onClick={this.slide33finishFormOnClick}
+                        onClick={this.slide34finishFormOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3760,7 +3577,7 @@ class Banner extends Component {
                       </Button>
                     </div>
                   </div>
-                  <div className="steps " id="slide34">
+                  <div className="steps " id="slide35">
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         {firstName} HURRY! GET YOUR CASH BEFORE TIME RUNS OUT!
@@ -3796,7 +3613,7 @@ class Banner extends Component {
                       </FormGroup>
 
                       <Button
-                        onClick={this.slide34ClickToContinueOnClick}
+                        onClick={this.slide35ClickToContinueOnClick}
                         type="button"
                         color="primary"
                         className="mt15"
@@ -3804,7 +3621,7 @@ class Banner extends Component {
                         Click to Comtinue
                       </Button>
                       <Button
-                        onClick={this.slide34noThanksOnClick}
+                        onClick={this.slide35noThanksOnClick}
                         type="button"
                         color="secondary"
                         className="mt15"

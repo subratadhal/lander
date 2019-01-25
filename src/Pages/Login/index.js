@@ -174,7 +174,7 @@ class Login extends Component {
                                             )}
                                     </InputGroup>
                                     <InputGroup className={passwordInputStyle}>
-                                        <Label for="">Password</Label>
+                                        <Label for="password">Password</Label>
                                         <InputGroupAddon addonType="prepend">
                                             <span className="password-icon"></span>
                                         </InputGroupAddon>
