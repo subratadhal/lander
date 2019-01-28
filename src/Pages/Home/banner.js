@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter, Link } from "react-router-dom";
 import CheckV2 from "../../Images/check-v2.png";
 import Spiner from "../../Images/big-spinner.gif";
-import NumberFormat from 'react-number-format';
+import NumberFormat from "react-number-format";
 import TooltipItem from "../../Common/tooltipitem";
 import {
   Container,
@@ -14,17 +14,23 @@ import {
   Label,
   Input,
   FormFeedback,
-  Modal, ModalHeader, ModalBody, ModalFooter,
-  InputGroup, InputGroupAddon
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  InputGroup,
+  InputGroupAddon
 } from "reactstrap";
 import validator from "validator";
 import DatePicker from "react-datepicker";
 import RadioInput from "../../Common/radioInput";
+import FormInput from "../../Common/formInput";
 import "react-datepicker/dist/react-datepicker.css";
-import radioData from '../../JsonData/radioButtonsData.json';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
-import generator from 'generate-password';
+import radioData from "../../JsonData/radioButtonsData.json";
+import inputData from "../../JsonData/inputData.json";
+import { confirmAlert } from "react-confirm-alert";
+import "react-confirm-alert/src/react-confirm-alert.css";
+import generator from "generate-password";
 class Banner extends Component {
   constructor(props) {
     super(props);
@@ -33,13 +39,14 @@ class Banner extends Component {
       tooltips: [
         {
           id: 0,
-          text: 'By providing a phone number, you are agreeing that LendingTree, its Network Lenders, and/or partners may contact you at this number, or another number that you later provide. You also agree to receive calls and messages from automated dialing systems and/or by pre-recorded message, and text messages (where applicable) at these numbers. Normal cell phone charges may apply if you provide a cellular number. You may continue with our services without providing a phone number by calling x-xxx-xxx-xxxx.'
+          text:
+            "By providing a phone number, you are agreeing that LendingTree, its Network Lenders, and/or partners may contact you at this number, or another number that you later provide. You also agree to receive calls and messages from automated dialing systems and/or by pre-recorded message, and text messages (where applicable) at these numbers. Normal cell phone charges may apply if you provide a cellular number. You may continue with our services without providing a phone number by calling x-xxx-xxx-xxxx."
         }
       ],
       loanAmount: "option3",
       loanDuration: "0",
       currentSlideID: "1",
-      emailAddress: "",
+      email: "",
       emailError: "",
       emailInputStyle: "",
       firstName: "",
@@ -81,7 +88,7 @@ class Banner extends Component {
       iGetPaid: "",
       monthlyGrossIncome: "",
       nextPayDate: new Date(),
-      nextPayDateError: '',
+      nextPayDateError: "",
       nextPayDateInputStyle: "",
       employerName: "",
       employerNameError: "",
@@ -110,6 +117,7 @@ class Banner extends Component {
       directDeposit: "",
       lengthOfBankAccount: "",
       bankAccountType: "",
+      creditScore: "",
       loanReason: "",
       moreInCreditCardDebt: "",
       moreInUnsecuredDebt: "",
@@ -118,7 +126,7 @@ class Banner extends Component {
       password: "",
       passwordError: "",
       passwordInputStyle: "",
-      passwordSuggestion: '',
+      passwordSuggestion: "",
       passwordSuggestionWrapper: false,
 
       maxSlider: "35",
@@ -131,8 +139,8 @@ class Banner extends Component {
       deadline: 200000,
       minutes: 0,
       seconds: 0,
-      cancelTimer: false,
-    }
+      cancelTimer: false
+    };
   }
   handlePreview = e => {
     // if (e.keyCode == 9) {  //tab pressed
@@ -146,7 +154,7 @@ class Banner extends Component {
       document.getElementById("slide" + c).classList.add("next");
       document.getElementById("slide" + c1).classList.add("current");
       document.getElementById("slide" + c).classList.remove("active");
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById("slide" + c).classList.remove("next");
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
@@ -160,7 +168,7 @@ class Banner extends Component {
         currentSlideID: c1,
         progressValue: p
       });
-      localStorage.setItem('currentSlideID', c1)
+      localStorage.setItem("currentSlideID", c1);
     }
   };
   handleNext = e => {
@@ -171,14 +179,14 @@ class Banner extends Component {
     window.scrollTo({
       top: 0,
       left: 0,
-      behavior: 'smooth'
+      behavior: "smooth"
     });
     const c = this.state.currentSlideID;
     if (c < this.state.maxSlider) {
       const c1 = parseInt(this.state.currentSlideID) + 1;
       document.getElementById("slide" + c).classList.add("previous");
       document.getElementById("slide" + c1).classList.add("current");
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById("slide" + c).classList.remove("active");
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
@@ -188,96 +196,79 @@ class Banner extends Component {
         currentSlideID: c1,
         progressValue: p
       });
-      localStorage.setItem('currentSlideID', c1)
+      localStorage.setItem("currentSlideID", c1);
     }
   };
-
   setSlider = () => {
-    var currentSlideID = localStorage.getItem('currentSlideID');
+    var currentSlideID = localStorage.getItem("currentSlideID");
     var previousSlide = currentSlideID - 1;
     if (currentSlideID > 1) {
       document.getElementById("slide1").classList.remove("active");
       document.getElementById("slide" + currentSlideID).classList.add("active");
       this.setState({
         currentSlideID: currentSlideID,
-        progressValue: (3 * previousSlide) + 2
+        progressValue: 3 * previousSlide + 2
       });
       var i = currentSlideID;
       do {
         i = i - 1;
-        document.getElementById("slide" + i.toString()).classList.add("previous");
+        document
+          .getElementById("slide" + i.toString())
+          .classList.add("previous");
       } while (i > 1);
-
     }
-  }
-
-  // slide2OptionChange = e => {
-  //   this.setState({
-  //     loanDuration: e.target.value
-  //   });
-  //   localStorage.setItem('loanDuration', e.target.value);
-
-  //   const classes = document.getElementsByClassName("slide2-radio");
-  //   var i;
-  //   for (i = 0; i < classes.length; i++) {
-  //     classes[i].classList.remove("active");
+  };
+  // slide3EmailAddressOnClick = e => {
+  //   const email = document.getElementById("email");
+  //   if (validator.isEmpty(email.value)) {
+  //     this.setState({
+  //       emailError: "Email address is required",
+  //       emailInputStyle: "error"
+  //     });
+  //   } else {
+  //     if (validator.isEmail(email.value)) {
+  //       this.setState({
+  //         emailError: "",
+  //         emailAddress: email.value,
+  //         emailInputStyle: "success"
+  //       });
+  //       this.handleNext(e);
+  //     } else {
+  //       this.setState({
+  //         emailError: "Invalid email address",
+  //         emailInputStyle: "error"
+  //       });
+  //     }
   //   }
-  //   const id = e.target.id;
-  //   document.getElementById(id + "-level").classList.add("active");
-  //   this.handleNext(e);
   // };
-  slide3EmailAddressOnClick = e => {
-    const email = document.getElementById("email");
-    if (validator.isEmpty(email.value)) {
-      this.setState({
-        emailError: "Email address is required",
-        emailInputStyle: "error"
-      });
-    } else {
-      if (validator.isEmail(email.value)) {
-        this.setState({
-          emailError: "",
-          emailAddress: email.value,
-          emailInputStyle: "success"
-        });
-        this.handleNext(e);
-      } else {
-        this.setState({
-          emailError: "Invalid email address",
-          emailInputStyle: "error"
-        });
-      }
-    }
-  };
-  slide3EmailAddressOnChange = e => {
-    const email = e.target.value;
-    if (validator.isEmpty(email)) {
-      this.setState({
-        emailError: "Email address is required",
-        emailInputStyle: "error"
-      });
-    } else {
-      if (validator.isEmail(email)) {
-        this.setState({
-          emailError: "",
-          emailAddress: email,
-          emailInputStyle: "success"
-        });
-      } else {
-        this.setState({
-          emailError: "Invalid email address",
-          emailInputStyle: "error"
-        });
-      }
-    }
-  };
-
+  // slide3EmailAddressOnChange = e => {
+  //   const email = e.target.value;
+  //   if (validator.isEmpty(email)) {
+  //     this.setState({
+  //       emailError: "Email address is required",
+  //       emailInputStyle: "error"
+  //     });
+  //   } else {
+  //     if (validator.isEmail(email)) {
+  //       this.setState({
+  //         emailError: "",
+  //         emailAddress: email,
+  //         emailInputStyle: "success"
+  //       });
+  //     } else {
+  //       this.setState({
+  //         emailError: "Invalid email address",
+  //         emailInputStyle: "error"
+  //       });
+  //     }
+  //   }
+  // };
   slide4PasswordOnClick = e => {
     e.stopPropagation();
     this.setState({
       passwordSuggestionWrapper: true
     });
-  }
+  };
   passwordMuskOnClick = e => {
     e.stopPropagation();
     this.setState({
@@ -286,14 +277,14 @@ class Banner extends Component {
       passwordError: "",
       passwordInputStyle: "success"
     });
-  }
+  };
   slide4PasswordOnChange = e => {
     const password = e.target.value;
     if (validator.isEmpty(password)) {
       this.setState({
         passwordError: "Password is required",
         passwordInputStyle: "error",
-        password: "",
+        password: ""
       });
     } else {
       if (validator.isLength(password, { min: 6, max: 15 })) {
@@ -306,7 +297,7 @@ class Banner extends Component {
         this.setState({
           passwordError: "Please enter at least 6 characters.",
           passwordInputStyle: "error",
-          password: password,
+          password: password
         });
       }
     }
@@ -320,19 +311,16 @@ class Banner extends Component {
         uppercase: true
       })
     });
-  }
-
+  };
   slide4CreatePasswordNextOnClick = e => {
     const pw = document.getElementById("password");
     const password = pw.value;
     if (validator.isEmpty(password)) {
-
       this.setState({
         passwordError: "Password is required",
         passwordInputStyle: "error",
-        password: "",
+        password: ""
       });
-
     } else {
       if (validator.isLength(password, { min: 6, max: 15 })) {
         this.setState({
@@ -345,11 +333,11 @@ class Banner extends Component {
         this.setState({
           passwordError: "Please enter at least 6 characters.",
           passwordInputStyle: "error",
-          password: password,
+          password: password
         });
       }
     }
-  }
+  };
   slide5FirstNameOnChange = e => {
     const firstName = e.target.value;
     if (validator.isEmpty(firstName)) {
@@ -453,7 +441,7 @@ class Banner extends Component {
       }
     }
   };
-  slide6ContactNumberOnChange = (val) => {
+  slide6ContactNumberOnChange = val => {
     const contactNumber = val.value;
     if (validator.isEmpty(contactNumber)) {
       this.setState({
@@ -713,59 +701,7 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide14OptionChange = e => {
-    this.setState({
-      incomeSource: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide14-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide15OptionChange = e => {
-    this.setState({
-      timeEmployed: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide15-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide16OptionChange = e => {
-    this.setState({
-      iGetPaid: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide16-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide17OptionChange = e => {
-    this.setState({
-      monthlyGrossIncome: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide17-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-    this.handleNext();
-  };
-  slide18nextPayDateOnChange = (date) => {
+  slide18nextPayDateOnChange = date => {
     if (date !== null) {
       this.setState({
         nextPayDateError: "",
@@ -773,10 +709,10 @@ class Banner extends Component {
         nextPayDateInputStyle: "success"
       });
     }
-  }
+  };
   slide18nextPayDateOnClick = e => {
     this.handleNext();
-  }
+  };
   slide19employerNameOnChange = e => {
     const employerName = e.target.value;
     if (validator.isEmpty(employerName)) {
@@ -816,7 +752,7 @@ class Banner extends Component {
       this.handleNext();
     }
   };
-  slide20employerPhoneNumberOnClick = (e) => {
+  slide20employerPhoneNumberOnClick = e => {
     const employerPhoneNumber = this.state.employerPhoneNumber;
     if (validator.isEmpty(employerPhoneNumber)) {
       this.setState({
@@ -841,7 +777,7 @@ class Banner extends Component {
       }
     }
   };
-  slide20employerPhoneNumberOnChange = (val) => {
+  slide20employerPhoneNumberOnChange = val => {
     const employerPhoneNumber = val.value;
     if (validator.isEmpty(employerPhoneNumber)) {
       this.setState({
@@ -951,7 +887,6 @@ class Banner extends Component {
       });
     } else {
       if (validator.isNumeric(socialSecurityNumber)) {
-
         if (validator.isLength(socialSecurityNumber, { min: 4, max: 4 })) {
           this.setState({
             socialSecurityNumberError: "",
@@ -995,7 +930,7 @@ class Banner extends Component {
       }
     }
   };
-  slide24ABARoutingNumberOnClick = (e) => {
+  slide24ABARoutingNumberOnClick = e => {
     const ABARoutingNumber = this.state.ABARoutingNumber;
     if (validator.isEmpty(ABARoutingNumber)) {
       this.setState({
@@ -1020,7 +955,7 @@ class Banner extends Component {
       }
     }
   };
-  slide24ABARoutingNumberOnChange = (e) => {
+  slide24ABARoutingNumberOnChange = e => {
     const ABARoutingNumber = e.target.value;
     if (validator.isEmpty(ABARoutingNumber)) {
       this.setState({
@@ -1059,7 +994,7 @@ class Banner extends Component {
         bankNameInputStyle: "success"
       });
     }
-  }
+  };
   slide25bankAccountNumberOnChange = e => {
     const bankAccountNumber = e.target.value;
     if (validator.isEmpty(bankAccountNumber)) {
@@ -1074,7 +1009,7 @@ class Banner extends Component {
         bankAccountNumberInputStyle: "success"
       });
     }
-  }
+  };
   slide25bankingInformationOnClick = e => {
     const bankAccountNumber = document.getElementById("bankAccountNumber");
     const bankName = document.getElementById("bankName");
@@ -1105,121 +1040,6 @@ class Banner extends Component {
       });
       this.handleNext();
     }
-  }
-  slide26OptionChange = e => {
-    this.setState({
-      directDeposit: e.target.value
-    });
-
-    const classes = document.getElementsByClassName("slide26-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide27OptionChange = e => {
-    this.setState({
-      lengthOfBankAccount: e.target.value
-    });
-
-    const classes = document.getElementsByClassName("slide27-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide28OptionChange = e => {
-    this.setState({
-      bankAccountType: e.target.value
-    });
-
-    const classes = document.getElementsByClassName("slide28-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide29OptionChange = e => {
-    this.setState({
-      lengthOfBankAccount: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide29-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide30OptionChange = e => {
-    this.setState({
-      loanReason: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide30-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide31OptionChange = e => {
-    this.setState({
-      moreInCreditCardDebt: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide31-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide32OptionChange = e => {
-    this.setState({
-      moreInUnsecuredDebt: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide32-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
-  };
-  slide33OptionChange = e => {
-    this.setState({
-      affordAggregatedMonthlyPayment: e.target.value
-    });
-    const classes = document.getElementsByClassName("slide33-radio");
-    var i;
-    for (i = 0; i < classes.length; i++) {
-      classes[i].classList.remove("active");
-    }
-    const id = e.target.id;
-    document.getElementById(id + "-level").classList.add("active");
-
-    this.handleNext();
   };
   slide34finishFormOnClick = () => {
     this.setState({
@@ -1228,14 +1048,14 @@ class Banner extends Component {
     this.popupAction("next");
     setInterval(() => this.getTimeUntil(this.state.deadline), 1000);
     this.resetTimer();
-  }
-  popupAction = (val) => {
+  };
+  popupAction = val => {
     var self = this;
     var i = 1;
-    setTimeout(function () {
+    setTimeout(function() {
       document.getElementById("popupStep1").classList.add("active");
     }, 500);
-    var x = setInterval(function () {
+    var x = setInterval(function() {
       if (i === 4) {
         clearInterval(x);
         self.setState({
@@ -1248,11 +1068,10 @@ class Banner extends Component {
           self.setState({
             popupOffer: true
           });
-          setTimeout(function () {
-            self.props.history.push('/offers');
+          setTimeout(function() {
+            self.props.history.push("/offers");
           }, 5000);
         } else {
-
         }
       } else {
         var j = i + 1;
@@ -1264,33 +1083,32 @@ class Banner extends Component {
         if (i === 4) {
           document.getElementById("popupMsg").classList.add("on");
         }
-
       }
     }, 2500);
-  }
+  };
   slide35ClickToContinueOnClick = () => {
     this.setState({
       popup: true
     });
     this.popupAction("offer");
-  }
+  };
   slide35noThanksOnClick = () => {
     this.setState({
       popupNoThankYou: true
     });
-  }
+  };
   handleNoThankYou = () => {
     this.setState({
       popupNoThankYou: false
     });
-  }
+  };
   handleShowOffers = () => {
     this.setState({
       popup: true,
       popupNoThankYou: false
     });
     this.popupAction("offer");
-  }
+  };
   confirmPopupOpen = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
@@ -1302,29 +1120,39 @@ class Banner extends Component {
               </div>
               <div className="popup-content">
                 <p>Time's up. Do you need more time?</p>
-                <button className="btn btn-secondary" onClick={() => {
-                  this.setState({
-                    deadline: 200000,
-                    cancelTimer: true
-                  });
-                  onClose();
-                }}>No</button>
-                <button className="btn btn-primary" onClick={() => {
-                  this.resetTimer();
-                  onClose();
-                }}>Yes</button>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => {
+                    this.setState({
+                      deadline: 200000,
+                      cancelTimer: true
+                    });
+                    onClose();
+                  }}
+                >
+                  No
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={() => {
+                    this.resetTimer();
+                    onClose();
+                  }}
+                >
+                  Yes
+                </button>
               </div>
             </div>
           </div>
-        )
+        );
       }
-    })
-  }
+    });
+  };
   toggleEConsent = () => {
     this.setState({
       modal: !this.state.modal
     });
-  }
+  };
   componentWillMount() {
     this.getTimeUntil(this.state.deadline);
     document.removeEventListener("keydown", this.escFunction, false);
@@ -1337,32 +1165,36 @@ class Banner extends Component {
     //password reset
     this.passwordResetOnClick();
     if (this.state.passwordSuggestionWrapper) {
-      document.body.addEventListener('click', this.bodyOnClick);
+      document.body.addEventListener("click", this.bodyOnClick);
     }
-
 
     this.setSlider();
   }
 
   bodyOnClick = e => {
     var class_name = e.target.classList[0];
-    if ((class_name === "password-suggestion") || (class_name === "ps-password") || (class_name === "ps-reset") || (class_name === "ps-label")) {
+    if (
+      class_name === "password-suggestion" ||
+      class_name === "ps-password" ||
+      class_name === "ps-reset" ||
+      class_name === "ps-label"
+    ) {
     } else {
       this.setState({
         passwordSuggestionWrapper: false
       });
     }
-  }
-  leading0 = (num) => {
-    return num < 10 ? '0' + num : num;
-  }
+  };
+  leading0 = num => {
+    return num < 10 ? "0" + num : num;
+  };
   resetTimer = () => {
     var d1 = new Date(),
       d2 = new Date(d1);
     d2.setMinutes(d1.getMinutes() + 10);
     this.setState({ deadline: d2 });
-  }
-  getTimeUntil = (deadline) => {
+  };
+  getTimeUntil = deadline => {
     const time = Date.parse(deadline) - Date.parse(new Date());
     if (time < 0) {
       this.setState({ minutes: 0, seconds: 0 });
@@ -1372,21 +1204,32 @@ class Banner extends Component {
       const minutes = Math.floor((time / 1000 / 60) % 60);
       this.setState({ minutes, seconds });
     }
-  }
-  escFunction = (event) => {
+  };
+  escFunction = event => {
     if (event.keyCode === 9) {
       event.preventDefault();
     }
-  }
+  };
   radioOnChange = (e, v, n) => {
     this.setState({
       [n]: v
     });
-    console.log('n', n)
-    localStorage.setItem('' + n, v);
+    console.log("n", n);
+    localStorage.setItem("" + n, v);
     this.handleNext(e);
     console.log("loanAmountOnChange this.state", this.state);
-  }
+  };
+  inputOnChange = (e, v, n) => {
+    console.log("inputOnChange e", e, v, n);
+    this.setState({
+      [n]: v
+    });
+    localStorage.setItem("" + n, v);
+  };
+  inputOnClick = e => {
+    console.log("inputOnClick e", e);
+    this.handleNext(e);
+  };
 
   render() {
     console.log("this.state", this.state);
@@ -1420,13 +1263,17 @@ class Banner extends Component {
     const employerNameError = this.state.employerNameError;
     const employerNameInputStyle = this.state.employerNameInputStyle;
     const employerPhoneNumberError = this.state.employerPhoneNumberError;
-    const employerPhoneNumberInputStyle = this.state.employerPhoneNumberInputStyle;
-    const driversLicenseOrStateIDError = this.state.driversLicenseOrStateIDError;
-    const driversLicenseOrStateIDInputStyle = this.state.driversLicenseOrStateIDInputStyle;
+    const employerPhoneNumberInputStyle = this.state
+      .employerPhoneNumberInputStyle;
+    const driversLicenseOrStateIDError = this.state
+      .driversLicenseOrStateIDError;
+    const driversLicenseOrStateIDInputStyle = this.state
+      .driversLicenseOrStateIDInputStyle;
     const licenseStateError = this.state.licenseStateError;
     const licenseStateInputStyle = this.state.licenseStateInputStyle;
     const socialSecurityNumberError = this.state.socialSecurityNumberError;
-    const socialSecurityNumberInputStyle = this.state.socialSecurityNumberInputStyle;
+    const socialSecurityNumberInputStyle = this.state
+      .socialSecurityNumberInputStyle;
     const ABARoutingNumberError = this.state.ABARoutingNumberError;
     const ABARoutingNumberInputStyle = this.state.ABARoutingNumberInputStyle;
     const bankNameError = this.state.bankNameError;
@@ -1445,30 +1292,32 @@ class Banner extends Component {
     const passwordSuggestion = this.state.passwordSuggestion;
     const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
 
+    const emailAddress = this.state.emailAddress;
     return (
-      <div className="banner-section" >
-        <Container >
-          <Row className="justify-content-sm-center" >
+      <div className="banner-section">
+        <Container>
+          <Row className="justify-content-sm-center">
             <Col sm="8">
-
               {progressView ? (
-                <div className="progress-bar-container" >
+                <div className="progress-bar-container">
                   <progress value={progress} max="100" />
                   <div className="progress-value">{progress}%</div>
                 </div>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Col>
-            <Col sm="8" >
-              <div className="apply-form-container" >
-                <Form className="apply-form" >
-                  <div className="steps active" id="slide1" >
-                    <div className="welcome-text" >
-                      You can get a loan between <strong>$100 and $35,000</strong> for any reason, whether it be to pay for a vehicle repair,
-                      home improvement expense, or even a vacation
+            <Col sm="8">
+              <div className="apply-form-container">
+                <Form className="apply-form">
+                  <div className="steps active" id="slide1">
+                    <div className="welcome-text">
+                      You can get a loan between{" "}
+                      <strong>$100 and $35,000</strong> for any reason, whether
+                      it be to pay for a vehicle repair, home improvement
+                      expense, or even a vacation
                     </div>
-                    <div className="inner-steps" >
+                    <div className="inner-steps">
                       <h3 id="" className="title current">
                         How much do you need?
                       </h3>
@@ -1486,8 +1335,8 @@ class Banner extends Component {
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         How long do you need to pay it back?
@@ -1499,72 +1348,41 @@ class Banner extends Component {
                         id={radioData[0]["radio2"].id}
                         slideName={radioData[0]["radio2"].slideName}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide3">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Email Address
                       </h3>
                       <p>Where to send your loan request confirmation</p>
-                      <FormGroup>
-                        <Label for="email" className="bold">
-                          Email
-                        </Label>
-                        <Input
-                          type="email"
-                          name="email"
-                          id="email"
-                          autoComplete="nope"
-                          placeholder="Email Address"
-                          onChange={this.slide3EmailAddressOnChange}
-                          className={emailInputStyle}
-                        />
-                        {emailError !== "" ? (
-                          <FormFeedback style={{ display: "block" }}>
-                            {emailError}
-                          </FormFeedback>
-                        ) : (
-                            ""
-                          )}
-                      </FormGroup>
-                      <small>
-                        By clicking "Next", you agree to our <Link to="/terms-of-use">Terms &amp; Conditions</Link> and <Link to="/privacy-policy">Privacy Policy</Link> and
-                        to receive important notices and other communications
-                        electronically.
-                      </small>
-                      <Button
-                        onClick={this.slide3EmailAddressOnClick}
-                        type="button"
-                        color="primary"
-                        className="mt15"
-                      >
-                        Next
-                      </Button>
+                      <FormInput
+                        inputOnClick={this.inputOnClick}
+                        onChange={this.inputOnChange}
+                        inputProps={inputData[0]["email"]}
+                        inputSlide={inputData[0]["slide"]}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide4">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Create a Password
                       </h3>
 
-                      <FormGroup >
+                      <FormGroup>
                         <Label for="password" className="bold">
                           Password
                         </Label>
@@ -1584,19 +1402,27 @@ class Banner extends Component {
                             {passwordError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
 
                       {passwordSuggestionWrapper ? (
                         <div className="password-suggestion">
-                          <span className="ps-password" onClick={this.passwordMuskOnClick} >{passwordSuggestion}</span>
-                          <span className="ps-reset" onClick={this.passwordResetOnClick}></span>
+                          <span
+                            className="ps-password"
+                            onClick={this.passwordMuskOnClick}
+                          >
+                            {passwordSuggestion}
+                          </span>
+                          <span
+                            className="ps-reset"
+                            onClick={this.passwordResetOnClick}
+                          />
                           <span className="ps-label">Suggested</span>
                         </div>
                       ) : (
-                          ""
-                        )}
+                        ""
+                      )}
 
                       <Button
                         onClick={this.slide4CreatePasswordNextOnClick}
@@ -1610,13 +1436,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide5">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Your Name
@@ -1629,7 +1453,7 @@ class Banner extends Component {
                         <Label for="firstName" className="bold">
                           First Name
                         </Label>
-                        <Input
+                        {/* <Input
                           type="text"
                           name="firstName"
                           id="firstName"
@@ -1637,15 +1461,14 @@ class Banner extends Component {
                           placeholder="First Name"
                           onChange={this.slide5FirstNameOnChange}
                           className={firstNameInputStyle}
-
                         />
                         {firstNameError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
                             {firstNameError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )} */}
                       </FormGroup>
                       <FormGroup>
                         <Label for="lastName" className="bold">
@@ -1659,15 +1482,14 @@ class Banner extends Component {
                           placeholder="Last Name"
                           onChange={this.slide5LastNameOnChange}
                           className={lastNameInputStyle}
-
                         />
                         {lastNameError !== "" ? (
                           <FormFeedback style={{ display: "block" }}>
                             {lastNameError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
 
                       <Button
@@ -1675,7 +1497,6 @@ class Banner extends Component {
                         type="button"
                         color="primary"
                         className="mt15"
-
                       >
                         Next
                       </Button>
@@ -1683,12 +1504,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide6">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Phone Number
@@ -1719,9 +1539,8 @@ class Banner extends Component {
                             {contactNumberError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
-
+                          ""
+                        )}
                       </FormGroup>
                       <small className="opt-in">
                         Providing your number is consent to receive calls, texts
@@ -1741,12 +1560,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide7">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Contact Time
@@ -1762,12 +1580,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide8">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         What's your Birthdate?
@@ -1805,8 +1622,8 @@ class Banner extends Component {
                                 {monthError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                           <Col>
                             <Label for="day" className="bold">
@@ -1858,8 +1675,8 @@ class Banner extends Component {
                                 {dayError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                           <Col>
                             <Label for="year" className="bold">
@@ -1961,8 +1778,8 @@ class Banner extends Component {
                                 {yearError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                         </Row>
                       </FormGroup>
@@ -1979,12 +1796,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide9">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Are you active military?
@@ -2000,12 +1816,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide10">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Zip Code
@@ -2031,8 +1846,8 @@ class Banner extends Component {
                             {zipCodeError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
 
                       <Button
@@ -2047,12 +1862,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide11">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Home Address
@@ -2076,8 +1890,8 @@ class Banner extends Component {
                                 {streetAddressError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                         </Row>
                         <Row className="mt15">
@@ -2098,8 +1912,8 @@ class Banner extends Component {
                                 {cityError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                           <Col>
                             <Label for="state" className="bold">
@@ -2171,8 +1985,8 @@ class Banner extends Component {
                                 {stateError}
                               </FormFeedback>
                             ) : (
-                                ""
-                              )}
+                              ""
+                            )}
                           </Col>
                         </Row>
                       </FormGroup>
@@ -2189,12 +2003,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide12">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         How long have you lived here?
@@ -2210,12 +2023,11 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide13">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you own your home?
@@ -2231,385 +2043,91 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide14">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Income Source
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide14-radio"
-                          id="slide14-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide14-radio1"
-                            value="Employment"
-                            id="slide14-radio1"
-                            checked={this.state.incomeSource === "option1"}
-                            onChange={this.slide14OptionChange}
-                          />
-                          Employment
-                        </Label>
-                        <Label
-                          check
-                          className="slide14-radio"
-                          id="slide14-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide14-radio1"
-                            value="Benefits"
-                            id="slide14-radio2"
-                            checked={this.state.incomeSource === "option2"}
-                            onChange={this.slide14OptionChange}
-                          />
-                          Benefits
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio7"].value}
+                        name={radioData[0]["radio7"].name}
+                        id={radioData[0]["radio7"].id}
+                        slideName={radioData[0]["radio7"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide15">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Time Employed
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide15-radio"
-                          id="slide15-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide15-radio1"
-                            value="1 Year or less"
-                            id="slide15-radio1"
-                            checked={this.state.timeEmployed === "option1"}
-                            onChange={this.slide15OptionChange}
-                          />
-                          1 Year or less
-                        </Label>
-                        <Label
-                          check
-                          className="slide15-radio"
-                          id="slide15-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide15-radio1"
-                            value="2 Years"
-                            id="slide15-radio2"
-                            checked={this.state.timeEmployed === "option2"}
-                            onChange={this.slide15OptionChange}
-                          />
-                          2 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide15-radio"
-                          id="slide15-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide15-radio1"
-                            value="3 Years"
-                            id="slide15-radio3"
-                            checked={this.state.timeEmployed === "option3"}
-                            onChange={this.slide15OptionChange}
-                          />
-                          3 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide15-radio"
-                          id="slide15-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide15-radio1"
-                            value="4 Years"
-                            id="slide15-radio4"
-                            checked={this.state.timeEmployed === "option4"}
-                            onChange={this.slide15OptionChange}
-                          />
-                          4 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide15-radio"
-                          id="slide15-radio5-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide15-radio1"
-                            value="5 Years and more"
-                            id="slide15-radio5"
-                            checked={this.state.timeEmployed === "option5"}
-                            onChange={this.slide15OptionChange}
-                          />
-                          5 Years and more
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio8"].value}
+                        name={radioData[0]["radio8"].name}
+                        id={radioData[0]["radio8"].id}
+                        slideName={radioData[0]["radio8"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide16">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         I get paid
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide16-radio"
-                          id="slide16-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide16-radio1"
-                            value="Weekly"
-                            id="slide16-radio1"
-                            checked={this.state.timeEmployed === "option1"}
-                            onChange={this.slide16OptionChange}
-                          />
-                          Weekly
-                        </Label>
-                        <Label
-                          check
-                          className="slide16-radio"
-                          id="slide16-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide16-radio1"
-                            value="Bi-Weekly"
-                            id="slide16-radio2"
-                            checked={this.state.timeEmployed === "option2"}
-                            onChange={this.slide16OptionChange}
-                          />
-                          Bi-Weekly
-                        </Label>
-                        <Label
-                          check
-                          className="slide16-radio"
-                          id="slide16-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide16-radio1"
-                            value="Monthly"
-                            id="slide16-radio3"
-                            checked={this.state.timeEmployed === "option3"}
-                            onChange={this.slide16OptionChange}
-                          />
-                          Monthly
-                        </Label>
-                        <Label
-                          check
-                          className="slide16-radio"
-                          id="slide16-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide16-radio1"
-                            value="Semi-Monthly"
-                            id="slide16-radio4"
-                            checked={this.state.timeEmployed === "option4"}
-                            onChange={this.slide16OptionChange}
-                          />
-                          Semi-Monthly
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio9"].value}
+                        name={radioData[0]["radio9"].name}
+                        id={radioData[0]["radio9"].id}
+                        slideName={radioData[0]["radio9"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps" id="slide17">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Monthly Gross Income
                       </h3>
-                      <FormGroup>
-                        <Row>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio1-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="Less than $1500"
-                                id="slide17-radio1"
-                                checked={this.state.monthlyGrossIncome === "option1"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              Less than $1500
-                            </Label>
-                          </Col>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio2-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$1500 - $2000"
-                                id="slide17-radio2"
-                                checked={this.state.monthlyGrossIncome === "option2"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $1500 - $2000
-                            </Label>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio3-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$2000 - $2500"
-                                id="slide17-radio3"
-                                checked={this.state.monthlyGrossIncome === "option3"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $2000 - $2500
-                        </Label>
-                          </Col>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio4-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$2500 - $3000"
-                                id="slide17-radio4"
-                                checked={this.state.monthlyGrossIncome === "option4"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $2500 - $3000
-                        </Label>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio5-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$3000 - $3500"
-                                id="slide17-radio5"
-                                checked={this.state.monthlyGrossIncome === "option5"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $3000 - $3500
-                          </Label>
-                          </Col>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio6-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$3500 - $4000"
-                                id="slide17-radio6"
-                                checked={this.state.monthlyGrossIncome === "option6"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $3500 - $4000
-                          </Label>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio7-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$4000 - $4500"
-                                id="slide17-radio7"
-                                checked={this.state.monthlyGrossIncome === "option7"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $4000 - $4500
-                          </Label>
-                          </Col>
-                          <Col sm="6">
-                            <Label
-                              check
-                              className="slide17-radio"
-                              id="slide17-radio8-level"
-                            >
-                              <Input
-                                type="radio"
-                                name="slide17-radio1"
-                                value="$4500 - $5000"
-                                id="slide17-radio8"
-                                checked={this.state.monthlyGrossIncome === "option8"}
-                                onChange={this.slide17OptionChange}
-                              />
-                              $4500 - $5000
-                          </Label>
-                          </Col>
-                        </Row>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio10"].value}
+                        name={radioData[0]["radio10"].name}
+                        id={radioData[0]["radio10"].id}
+                        slideName={radioData[0]["radio10"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide18">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Next Pay Date
@@ -2632,8 +2150,8 @@ class Banner extends Component {
                             {nextPayDateError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide18nextPayDateOnClick}
@@ -2647,18 +2165,19 @@ class Banner extends Component {
                   </div>
                   <div className="steps" id="slide19">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Employer Name
                       </h3>
                       <p>
-                        Lenders want to know that you're secure in your employment because after all, the money you make is how you're going to be able to repay them.
+                        Lenders want to know that you're secure in your
+                        employment because after all, the money you make is how
+                        you're going to be able to repay them.
                       </p>
                       <FormGroup>
                         <Label for="employerName" className="bold">
@@ -2677,8 +2196,8 @@ class Banner extends Component {
                             {employerNameError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide19employerNameOnClick}
@@ -2692,18 +2211,20 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide20">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Employer Phone Number
                       </h3>
                       <p>
-                        This number is mandatory for most banks. Lenders will never call your employer and disclose that they are from a loan company. If you work for yourself, please use your cell phone.
+                        This number is mandatory for most banks. Lenders will
+                        never call your employer and disclose that they are from
+                        a loan company. If you work for yourself, please use
+                        your cell phone.
                       </p>
                       <FormGroup>
                         <Label for="employerPhoneNumber" className="bold">
@@ -2712,7 +2233,9 @@ class Banner extends Component {
                         <NumberFormat
                           id="employerPhoneNumber"
                           placeholder="xxx-xxx-xxxx"
-                          onValueChange={this.slide20employerPhoneNumberOnChange}
+                          onValueChange={
+                            this.slide20employerPhoneNumberOnChange
+                          }
                           format="###-###-####"
                           className={
                             "form-control " +
@@ -2726,8 +2249,8 @@ class Banner extends Component {
                             {employerPhoneNumberError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide20employerPhoneNumberOnClick}
@@ -2741,19 +2264,16 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide21">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Drivers license or State ID
                       </h3>
-                      <p>
-                        proof of who you are
-                      </p>
+                      <p>proof of who you are</p>
                       <FormGroup>
                         <Label for="driversLicenseOrStateID " className="bold">
                           Drivers license or State ID
@@ -2771,8 +2291,8 @@ class Banner extends Component {
                             {driversLicenseOrStateIDError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide21driversLicenseOrStateIDOnClick}
@@ -2786,19 +2306,16 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide22">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         License State
                       </h3>
-                      <p>
-                        further proof of who you are
-                      </p>
+                      <p>further proof of who you are</p>
                       <FormGroup>
                         <Label for="licenseState " className="bold">
                           License State
@@ -2810,7 +2327,7 @@ class Banner extends Component {
                           onChange={this.slide22licenseStateOnChange}
                           className={licenseStateInputStyle}
                         >
-                          <option value="" >Select</option>
+                          <option value="">Select</option>
                           <option value="AL">Alabama</option>
                           <option value="AK">Alaska</option>
                           <option value="AZ">Arizona</option>
@@ -2869,8 +2386,8 @@ class Banner extends Component {
                             {licenseStateError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide22licenseStateOnClick}
@@ -2884,23 +2401,37 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide23">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Social Security Number
                       </h3>
                       <p>
-                        Lenders use your social security number to verify your identity. It is vital that you enter your valid social security number. Lenders will reject applicants whose information they cannot verify.
+                        Lenders use your social security number to verify your
+                        identity. It is vital that you enter your valid social
+                        security number. Lenders will reject applicants whose
+                        information they cannot verify.
                       </p>
                       <FormGroup>
                         <InputGroup className={socialSecurityNumberInputStyle}>
-                          <Label for="email">Please enter the last 4 digits of your SSN <span className="tooltip-icon" id={"Tooltip-" + this.state.tooltips[0].id}>?</span> </Label>
-                          <TooltipItem key={this.state.tooltips[0].id} item={this.state.tooltips[0].text} id={this.state.tooltips[0].id} />
+                          <Label for="email">
+                            Please enter the last 4 digits of your SSN{" "}
+                            <span
+                              className="tooltip-icon"
+                              id={"Tooltip-" + this.state.tooltips[0].id}
+                            >
+                              ?
+                            </span>{" "}
+                          </Label>
+                          <TooltipItem
+                            key={this.state.tooltips[0].id}
+                            item={this.state.tooltips[0].text}
+                            id={this.state.tooltips[0].id}
+                          />
                           <div className="from-center">
                             <Input
                               type="password"
@@ -2908,22 +2439,25 @@ class Banner extends Component {
                               id="socialSecurityNumber"
                               autoComplete="nope"
                               placeholder="xxxx"
-                              onChange={this.slide23socialSecurityNumberOnChange}
+                              onChange={
+                                this.slide23socialSecurityNumberOnChange
+                              }
                             />
                             <InputGroupAddon addonType="prepend">
-                              <span className="password-icon"></span>
+                              <span className="password-icon" />
                             </InputGroupAddon>
                           </div>
                           {socialSecurityNumberError !== "" ? (
-                            <FormFeedback className="feedback-center" style={{ display: "block" }}>
+                            <FormFeedback
+                              className="feedback-center"
+                              style={{ display: "block" }}
+                            >
                               {socialSecurityNumberError}
                             </FormFeedback>
                           ) : (
-                              ""
-                            )}
-
+                            ""
+                          )}
                         </InputGroup>
-
                       </FormGroup>
                       <Button
                         onClick={this.slide23socialSecurityNumberOnClick}
@@ -2937,19 +2471,19 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide24">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         ABA Routing Number
                       </h3>
                       <p>
                         Where would you like the funds to be deposited? <br />
-                        TIP: Banks are significantly more likely to fund checking accounts than savings accounts.
+                        TIP: Banks are significantly more likely to fund
+                        checking accounts than savings accounts.
                       </p>
                       <div className="img-tag">
                         <img src={CheckV2} alt="" />
@@ -2971,8 +2505,8 @@ class Banner extends Component {
                             {ABARoutingNumberError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide24ABARoutingNumberOnClick}
@@ -2986,19 +2520,19 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide25">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Banking Information
                       </h3>
                       <p>
                         Where would you like the funds to be deposited? <br />
-                        TIP: Banks are significantly more likely to fund checking accounts than savings accounts.
+                        TIP: Banks are significantly more likely to fund
+                        checking accounts than savings accounts.
                       </p>
                       <FormGroup>
                         <Label for="bankName" className="bold">
@@ -3017,8 +2551,8 @@ class Banner extends Component {
                             {bankNameError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <div className="img-tag">
                         <img src={CheckV2} alt="" />
@@ -3040,8 +2574,8 @@ class Banner extends Component {
                             {bankAccountNumberError}
                           </FormFeedback>
                         ) : (
-                            ""
-                          )}
+                          ""
+                        )}
                       </FormGroup>
                       <Button
                         onClick={this.slide25bankingInformationOnClick}
@@ -3055,517 +2589,209 @@ class Banner extends Component {
                   </div>
                   <div className="steps " id="slide26">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do You Have Direct Deposit?
                       </h3>
-                      <p>TIP: Banks are significantly more likely to fund accounts with direct deposit.</p>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide26-radio"
-                          id="slide26-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide26-radio1"
-                            value="Yes"
-                            id="slide26-radio1"
-                            checked={this.state.directDeposit === "option1"}
-                            onChange={this.slide26OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide26-radio"
-                          id="slide26-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide26-radio1"
-                            value="No"
-                            id="slide26-radio2"
-                            checked={this.state.directDeposit === "option2"}
-                            onChange={this.slide26OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <p>
+                        TIP: Banks are significantly more likely to fund
+                        accounts with direct deposit.
+                      </p>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio11"].value}
+                        name={radioData[0]["radio11"].name}
+                        id={radioData[0]["radio11"].id}
+                        slideName={radioData[0]["radio11"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide27">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Length of Bank Account
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide27-radio"
-                          id="slide27-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide27-radio1"
-                            value="One Year or less"
-                            id="slide27-radio1"
-                            checked={this.state.lengthOfBankAccount === "option1"}
-                            onChange={this.slide27OptionChange}
-                          />
-                          One Year or less
-                        </Label>
-                        <Label
-                          check
-                          className="slide27-radio"
-                          id="slide27-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide27-radio1"
-                            value="2 Years"
-                            id="slide27-radio2"
-                            checked={this.state.lengthOfBankAccount === "option2"}
-                            onChange={this.slide27OptionChange}
-                          />
-                          2 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide27-radio"
-                          id="slide27-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide27-radio1"
-                            value="3 Years"
-                            id="slide27-radio3"
-                            checked={this.state.lengthOfBankAccount === "option3"}
-                            onChange={this.slide27OptionChange}
-                          />
-                          3 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide27-radio"
-                          id="slide27-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide27-radio1"
-                            value="4 Years"
-                            id="slide27-radio4"
-                            checked={this.state.lengthOfBankAccount === "option4"}
-                            onChange={this.slide27OptionChange}
-                          />
-                          4 Years
-                        </Label>
-                        <Label
-                          check
-                          className="slide27-radio"
-                          id="slide27-radio5-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide27-radio1"
-                            value="5 Years"
-                            id="slide27-radio5"
-                            checked={this.state.lengthOfBankAccount === "option5"}
-                            onChange={this.slide27OptionChange}
-                          />
-                          5 Years
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio12"].value}
+                        name={radioData[0]["radio12"].name}
+                        id={radioData[0]["radio12"].id}
+                        slideName={radioData[0]["radio12"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide28">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Bank Account Type
                       </h3>
-                      <p>TIP: Banks are significantly more likely to fund checking accounts than savings accounts</p>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide28-radio"
-                          id="slide28-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide28-radio1"
-                            value="Checking"
-                            id="slide28-radio1"
-                            checked={this.state.bankAccountType === "option1"}
-                            onChange={this.slide28OptionChange}
-                          />
-                          Checking
-                        </Label>
-                        <Label
-                          check
-                          className="slide28-radio"
-                          id="slide28-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide28-radio1"
-                            value="Savings"
-                            id="slide28-radio2"
-                            checked={this.state.bankAccountType === "option2"}
-                            onChange={this.slide28OptionChange}
-                          />
-                          Savings
-                        </Label>
-                      </FormGroup>
+                      <p>
+                        TIP: Banks are significantly more likely to fund
+                        checking accounts than savings accounts
+                      </p>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio13"].value}
+                        name={radioData[0]["radio13"].name}
+                        id={radioData[0]["radio13"].id}
+                        slideName={radioData[0]["radio13"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide29">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Length of Bank Account
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide29-radio"
-                          id="slide29-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide29-radio1"
-                            value="Excellent 700 +"
-                            id="slide29-radio1"
-                            checked={this.state.lengthOfBankAccount === "option1"}
-                            onChange={this.slide29OptionChange}
-                          />
-                          Excellent 700 +
-                        </Label>
-                        <Label
-                          check
-                          className="slide29-radio"
-                          id="slide29-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide29-radio1"
-                            value="Good 600 - 700"
-                            id="slide29-radio2"
-                            checked={this.state.lengthOfBankAccount === "option2"}
-                            onChange={this.slide29OptionChange}
-                          />
-                          Good 600 - 700
-                        </Label>
-                        <Label
-                          check
-                          className="slide29-radio"
-                          id="slide29-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide29-radio1"
-                            value="Fair 500 - 600"
-                            id="slide29-radio3"
-                            checked={this.state.lengthOfBankAccount === "option3"}
-                            onChange={this.slide29OptionChange}
-                          />
-                          Fair 500 - 600
-                        </Label>
-                        <Label
-                          check
-                          className="slide29-radio"
-                          id="slide29-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide29-radio1"
-                            value="Poor < 500"
-                            id="slide29-radio4"
-                            checked={this.state.lengthOfBankAccount === "option4"}
-                            onChange={this.slide29OptionChange}
-                          />
-                          Poor &#60; 500
-                        </Label>
-                        <Label
-                          check
-                          className="slide29-radio"
-                          id="slide29-radio5-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide29-radio1"
-                            value="not sure"
-                            id="slide29-radio5"
-                            checked={this.state.lengthOfBankAccount === "option5"}
-                            onChange={this.slide29OptionChange}
-                          />
-                          not sure
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio14"].value}
+                        name={radioData[0]["radio14"].name}
+                        id={radioData[0]["radio14"].id}
+                        slideName={radioData[0]["radio14"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide30">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Loan Reason
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide30-radio"
-                          id="slide30-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="Credit Card Debt Relief"
-                            id="slide30-radio1"
-                            checked={this.state.loanReason === "option1"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          Credit Card Debt Relief
-                        </Label>
-                        <Label
-                          check
-                          className="slide30-radio"
-                          id="slide30-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="Student Loan Relief"
-                            id="slide30-radio2"
-                            checked={this.state.loanReason === "option2"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          Student Loan Relief
-                        </Label>
-                        <Label
-                          check
-                          className="slide30-radio"
-                          id="slide30-radio3-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="Debt Consolidation"
-                            id="slide30-radio3"
-                            checked={this.state.loanReason === "option3"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          Debt Consolidation
-                        </Label>
-                        <Label
-                          check
-                          className="slide30-radio"
-                          id="slide30-radio4-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide30-radio1"
-                            value="Other"
-                            id="slide30-radio4"
-                            checked={this.state.loanReason === "option4"}
-                            onChange={this.slide30OptionChange}
-                          />
-                          Other
-                        </Label>
-
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio15"].value}
+                        name={radioData[0]["radio15"].name}
+                        id={radioData[0]["radio15"].id}
+                        slideName={radioData[0]["radio15"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide31">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you have $10,000 or more in credit card debt?
                       </h3>
-                      <p>Give us an estimate, this will not affect your loan request</p>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide31-radio"
-                          id="slide31-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide31-radio1"
-                            value="Yes"
-                            id="slide31-radio1"
-                            checked={this.state.moreInCreditCardDebt === "option1"}
-                            onChange={this.slide31OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide31-radio"
-                          id="slide31-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide31-radio1"
-                            value="No"
-                            id="slide31-radio2"
-                            checked={this.state.moreInCreditCardDebt === "option2"}
-                            onChange={this.slide31OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <p>
+                        Give us an estimate, this will not affect your loan
+                        request
+                      </p>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio16"].value}
+                        name={radioData[0]["radio16"].name}
+                        id={radioData[0]["radio16"].id}
+                        slideName={radioData[0]["radio16"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide32">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Do you have $10,000 or more in unsecured debt?
                       </h3>
-                      <p>Give us an estimate, this will not affect your loan request</p>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide32-radio"
-                          id="slide32-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide32-radio1"
-                            value="Yes"
-                            id="slide32-radio1"
-                            checked={this.state.moreInUnsecuredDebt === "option1"}
-                            onChange={this.slide32OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide32-radio"
-                          id="slide32-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide32-radio1"
-                            value="No"
-                            id="slide32-radio2"
-                            checked={this.state.moreInUnsecuredDebt === "option2"}
-                            onChange={this.slide32OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <p>
+                        Give us an estimate, this will not affect your loan
+                        request
+                      </p>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio17"].value}
+                        name={radioData[0]["radio17"].name}
+                        id={radioData[0]["radio17"].id}
+                        slideName={radioData[0]["radio17"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide33">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Can you afford an aggregated monthly payment of $250?
                       </h3>
-                      <FormGroup>
-                        <Label
-                          check
-                          className="slide33-radio"
-                          id="slide33-radio1-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide33-radio1"
-                            value="Yes"
-                            id="slide33-radio1"
-                            checked={this.state.affordAggregatedMonthlyPayment === "option1"}
-                            onChange={this.slide33OptionChange}
-                          />
-                          Yes
-                        </Label>
-                        <Label
-                          check
-                          className="slide33-radio"
-                          id="slide33-radio2-level"
-                        >
-                          <Input
-                            type="radio"
-                            name="slide33-radio1"
-                            value="No"
-                            id="slide33-radio2"
-                            checked={this.state.affordAggregatedMonthlyPayment === "option2"}
-                            onChange={this.slide33OptionChange}
-                          />
-                          No
-                        </Label>
-                      </FormGroup>
+                      <RadioInput
+                        onChange={this.radioOnChange}
+                        value={radioData[0]["radio18"].value}
+                        name={radioData[0]["radio18"].name}
+                        id={radioData[0]["radio18"].id}
+                        slideName={radioData[0]["radio18"].slideName}
+                      />
                     </div>
                   </div>
                   <div className="steps " id="slide34">
                     <Button
-
                       type="button"
                       color="primary"
                       onClick={this.handlePreview}
-                      className="preview-button">
-                    </Button>
+                      className="preview-button"
+                    />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         Submit Loan Request
                       </h3>
                       <p className="justify">
-                        By clicking “Finish Form” I affirm by electronic signature that (1) I have read, understand, and agree to the
-                        &nbsp;<Link to="/privacy-policy">Privacy Policy</Link>,
-                        &nbsp;<a href="javascript:void(0)" onClick={this.toggleEConsent}>E-consent</a>
-                        &nbsp;<Link to="/terms-of-use">Terms</Link>, and
-                        &nbsp;<Link to="/rates-and-fees">Rates &amp; Fees</Link>,
-                        and (2) I give my express authorization to share my information with
-                        Lender.page, lenders, and other marketing partners to contact me at the information provided above via phone call, SMS/text message and/or email.
+                        By clicking “Finish Form” I affirm by electronic
+                        signature that (1) I have read, understand, and agree to
+                        the &nbsp;
+                        <Link to="/privacy-policy">Privacy Policy</Link>, &nbsp;
+                        <a
+                          href="javascript:void(0)"
+                          onClick={this.toggleEConsent}
+                        >
+                          E-consent
+                        </a>
+                        &nbsp;<Link to="/terms-of-use">Terms</Link>, and &nbsp;
+                        <Link to="/rates-and-fees">Rates &amp; Fees</Link>, and
+                        (2) I give my express authorization to share my
+                        information with Lender.page, lenders, and other
+                        marketing partners to contact me at the information
+                        provided above via phone call, SMS/text message and/or
+                        email.
                       </p>
                       <Button
                         onClick={this.slide34finishFormOnClick}
@@ -3582,19 +2808,32 @@ class Banner extends Component {
                       <h3 id="" className="title current">
                         {firstName} HURRY! GET YOUR CASH BEFORE TIME RUNS OUT!
                       </h3>
-                      <p className="mb0" >
+                      <p className="mb0">
                         <span>Session will expire in</span>
-                        {cancelTimer ? (<span className="red">Any Second!</span>) : (
-
+                        {cancelTimer ? (
+                          <span className="red">Any Second!</span>
+                        ) : (
                           <span className="red">
-                            {this.leading0(this.state.minutes)} {minutes === 0 ? ("Minute") : ("Minutes")}
-                            {' '}
+                            {this.leading0(this.state.minutes)}{" "}
+                            {minutes === 0 ? "Minute" : "Minutes"}{" "}
                             {this.leading0(this.state.seconds)} Seconds
-                        </span>
+                          </span>
                         )}
-                        <strong className="responsive-text">Submit below to request your loan now!</strong>
+                        <strong className="responsive-text">
+                          Submit below to request your loan now!
+                        </strong>
                       </p>
-                      <div className="small-para">We were unable to connect you with our network of third party lenders for your requested amount. However, we work with several lenders who may approve you for a short term loan up to $35,000. Please note that loan amounts, interest rates and repayment terms will vary by lender. If you would like to apply for a short term loan up to $35,000, please select a new loan amount below and click to continue. You will not need to provide additional information.</div>
+                      <div className="small-para">
+                        We were unable to connect you with our network of third
+                        party lenders for your requested amount. However, we
+                        work with several lenders who may approve you for a
+                        short term loan up to $35,000. Please note that loan
+                        amounts, interest rates and repayment terms will vary by
+                        lender. If you would like to apply for a short term loan
+                        up to $35,000, please select a new loan amount below and
+                        click to continue. You will not need to provide
+                        additional information.
+                      </div>
                       <FormGroup className="mb0">
                         <Input
                           type="select"
@@ -3660,45 +2899,69 @@ class Banner extends Component {
                 <p>This will take just a few moments</p>
               </div>
               <div className="popup-content">
-                <p>Please wait while the loan request is being processed. The loan request process can take up to 5 minutes, please do not click back or refresh the page.</p>
+                <p>
+                  Please wait while the loan request is being processed. The
+                  loan request process can take up to 5 minutes, please do not
+                  click back or refresh the page.
+                </p>
                 <div className="popup-steps">
-                  <div className="popup-steps-row" id="popupStep1">Verifying Loan Request</div>
-                  <div className="popup-steps-row" id="popupStep2">Accessing Loan Provider Database</div>
-                  <div className="popup-steps-row" id="popupStep3">Confirming Availability</div>
-                  <div className="popup-msg" id="popupMsg">The next step will take 3 minures</div>
-                  <div className="popup-steps-row" id="popupStep4">Retrieving Response</div>
+                  <div className="popup-steps-row" id="popupStep1">
+                    Verifying Loan Request
+                  </div>
+                  <div className="popup-steps-row" id="popupStep2">
+                    Accessing Loan Provider Database
+                  </div>
+                  <div className="popup-steps-row" id="popupStep3">
+                    Confirming Availability
+                  </div>
+                  <div className="popup-msg" id="popupMsg">
+                    The next step will take 3 minures
+                  </div>
+                  <div className="popup-steps-row" id="popupStep4">
+                    Retrieving Response
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-            ""
-          )}
+          ""
+        )}
         {popupNoThankYou ? (
           <div className="popup">
             <div className="popup-inner small-popup">
               <div className="popup-header">
-                <p>Our users typically find great success in our short term lending products, the offers are not obligatory, so feel free to check them out.</p>
+                <p>
+                  Our users typically find great success in our short term
+                  lending products, the offers are not obligatory, so feel free
+                  to check them out.
+                </p>
               </div>
               <div className="popup-content">
-
                 <Button
                   onClick={this.handleShowOffers}
                   type="button"
                   color="primary"
                   className="mt15"
-                > Show me the offers!</Button>
+                >
+                  {" "}
+                  Show me the offers!
+                </Button>
                 <Button
                   type="button"
                   color="secondary"
                   className="mt15"
-                  onClick={this.handleNoThankYou}> No thank you</Button>
+                  onClick={this.handleNoThankYou}
+                >
+                  {" "}
+                  No thank you
+                </Button>
               </div>
             </div>
           </div>
         ) : (
-            ""
-          )}
+          ""
+        )}
         {popupOffer ? (
           <div className="popup">
             <div className="popup-inner small-popup">
@@ -3707,37 +2970,148 @@ class Banner extends Component {
               </div>
               <div className="popup-content">
                 <img src={Spiner} alt="spiner" />
-                <p>Redirecting page to loan lender in 5 seconds.<br />
-                  If redirect doesn't work, please click here.</p>
+                <p>
+                  Redirecting page to loan lender in 5 seconds.
+                  <br />
+                  If redirect doesn't work, please click here.
+                </p>
               </div>
             </div>
           </div>
         ) : (
-            ""
-          )}
-        <Modal isOpen={this.state.modal} toggle={this.toggleEConsent} className={this.props.className}>
+          ""
+        )}
+        <Modal
+          isOpen={this.state.modal}
+          toggle={this.toggleEConsent}
+          className={this.props.className}
+        >
           <ModalHeader toggle={this.toggleEConsent}>E-consent</ModalHeader>
           <ModalBody>
-            <p><strong>PLEASE TAKE NOTICE THAT THIS CONSENT IS DEMANDED BY ONE OR MORE OF THE LENDERS TO WHOM YOU WILL BE REFERRED. IT DOES NOT GOVERN ANY COMMUNICATIONS FROM THE OWNER OF THIS WEBSITE.WE MAKE NO REPRESENTATIONS AS TO WHAT IF ANY COMMUNICATIONS YOU WILL RECEIVE FROM SUCH LENDER OR IF THIS NOTICE IS EFFECTIVE FOR SUCH COMMUNICATIONS. THE OWNER OF THIS WEBSITE GENERALLY AND SPECIFICALLY DISCLAIMS ANY AND ALL LIABILITY FOR USE OF THIS CONSENT DOCUMENT.</strong>
+            <p>
+              <strong>
+                PLEASE TAKE NOTICE THAT THIS CONSENT IS DEMANDED BY ONE OR MORE
+                OF THE LENDERS TO WHOM YOU WILL BE REFERRED. IT DOES NOT GOVERN
+                ANY COMMUNICATIONS FROM THE OWNER OF THIS WEBSITE.WE MAKE NO
+                REPRESENTATIONS AS TO WHAT IF ANY COMMUNICATIONS YOU WILL
+                RECEIVE FROM SUCH LENDER OR IF THIS NOTICE IS EFFECTIVE FOR SUCH
+                COMMUNICATIONS. THE OWNER OF THIS WEBSITE GENERALLY AND
+                SPECIFICALLY DISCLAIMS ANY AND ALL LIABILITY FOR USE OF THIS
+                CONSENT DOCUMENT.
+              </strong>
             </p>
-            <p><strong>CONSENT FOR ELECTRONIC SIGNATURES, RECORDS, AND DISCLOSURES ("E-Consent")</strong>
+            <p>
+              <strong>
+                CONSENT FOR ELECTRONIC SIGNATURES, RECORDS, AND DISCLOSURES
+                ("E-Consent")
+              </strong>
             </p>
-            <p><i>Please read this information carefully and print a copy and/or retain this information for future reference.</i></p>
-            <p><strong>Introduction.</strong> In order to offer you a loan, one or more of the third party lenders need your consent to use and accept electronic signatures, records, and disclosures ("E-Consent"). This form from such lender, notifies you of your rights when receiving electronic disclosures, notices, and information. By clicking on the link assenting to this notice, you acknowledge that you received this E-Consent and that you consent to conduct transactions using electronic signatures, electronic disclosures, electronic records, and electronic contract documents ("Disclosures").</p>
-            <p><strong>Option for Paper or Non-Electronic Records.</strong> You may request any Disclosures in paper copy by contacting the third party lender directly. The lenders will provide paper copies at no charge. The lenders will retain all Disclosures as applicable law requires.</p>
-            <p><strong>Scope of Consent.</strong> The lender has informed us that this E-Consent applies to all interactions online concerning you and the third party lender and includes those interactions engaged in on any mobile device, including phones, smart-phones, and tablets. By exercising this E-Consent, the third party lender may process your information and interact during all online interactions with you electronically. The lender may also send you notices electronically related to its interactions and transactions. Disclosures may be provided online at our or third party lenders' websites, and may be provided by e-mail.</p>
-            <p><strong>Consenting to Do Business Electronically.</strong> Before you decide to do business electronically with the third party lenders, you should consider whether you have the required hardware and software capabilities described below.</p>
-            <p><strong>Hardware and Software Requirements.</strong> To access and retain the Disclosures electronically, you will need to use the following computer software and hardware: A PC or MAC compatible computer or other device capable of accessing the Internet, access to an e-mail account, and an Internet Browser software program that supports at least 128 bit encryption, such as Microsoft® Internet Explorer, Netscape® or Mozilla Firefox®. To read some documents, you may need a PDF file reader like Adobe® Acrobat Reader X ® or Foxit®. You will need a printer or a long-term storage device, such as your computer's disk drive, to retain a copy of the Disclosures for future reference. You may send any questions regarding the hardware and software requirements directly to the third party lenders.</p>
-            <p><strong>Withdrawing Consent.</strong> Your E-Consent for our third party lenders' consideration of your loan request cannot be withdrawn because it is a one-time transaction.If you are connected with one or more third party lenders, you are free to withdraw your E-Consent with those third party lenders at any time and at no charge. However, if you withdraw this E-Consent before receiving credit, you may be prevented from obtaining credit from that lender.Contact the third party lender directly if you wish to withdraw this E-consent.If you decide to withdraw this E-Consent, the legal effectiveness, validity, and enforceability of prior electronic Disclosures will not be affected.</p>
-            <p><strong>Change to Your Contact Information.</strong> You should keep third party lenders informed of any change in your electronic address or mailing address. You may update such information by logging into the third party lender's website or by sending the lender a written update by mail.</p>
-            <p><strong>YOUR ABILITY TO ACCESS DISCLOSURES.</strong> BY CLICKING THE LINK, YOU ASSENT TO THE TERMS OF THIS DISCLOSURE . YOU ACKNOWLEDGE THAT YOU CAN ACCESS THE DISCLOSURES IN THE DESIGNATED FORMATS DESCRIBED ABOVE.</p>
-            <p><strong>CONSENT.</strong> BY CLICKING THE LINK,YOU ACKNOWLEDGE YOU HAVE READ THIS INFORMATION ABOUT ELECTRONIC SIGNATURES, RECORDS, DISCLOSURES, AND DOING BUSINESS ELECTRONICALLY. YOU CONSENT TO USING ELECTRONIC SIGNATURES, HAVING ALL DISCLOSURES PROVIDED OR MADE AVAILABLE TO YOU IN ELECTRONIC FORM AND TO DOING BUSINESS WITH THE LENDER ELECTRONICALLY. YOU ACKNOWLEDGE THAT YOU MAY REQUEST A PAPER COPY OF THE ELECTRONIC RECORDS AND DISCLOSURES, WHICH WILL BE PROVIDED TO YOU AT NO CHARGE. IF YOU REFRAIN FROM PROCEEDING THEN YOU NEITHER WISH TO USE ELECTRONIC SIGNATURES NOR CONDUCT THIS TRANSACTION ELECTRONICALLY. YOU ALSO ACKNOWLEDGE THAT YOUR CONSENT TO ELECTRONIC DISCLOSURES IS REQUIRED TO RECEIVE SERVICES FROM THIRD PARTY LENDERS OVER THE INTERNET.</p>
+            <p>
+              <i>
+                Please read this information carefully and print a copy and/or
+                retain this information for future reference.
+              </i>
+            </p>
+            <p>
+              <strong>Introduction.</strong> In order to offer you a loan, one
+              or more of the third party lenders need your consent to use and
+              accept electronic signatures, records, and disclosures
+              ("E-Consent"). This form from such lender, notifies you of your
+              rights when receiving electronic disclosures, notices, and
+              information. By clicking on the link assenting to this notice, you
+              acknowledge that you received this E-Consent and that you consent
+              to conduct transactions using electronic signatures, electronic
+              disclosures, electronic records, and electronic contract documents
+              ("Disclosures").
+            </p>
+            <p>
+              <strong>Option for Paper or Non-Electronic Records.</strong> You
+              may request any Disclosures in paper copy by contacting the third
+              party lender directly. The lenders will provide paper copies at no
+              charge. The lenders will retain all Disclosures as applicable law
+              requires.
+            </p>
+            <p>
+              <strong>Scope of Consent.</strong> The lender has informed us that
+              this E-Consent applies to all interactions online concerning you
+              and the third party lender and includes those interactions engaged
+              in on any mobile device, including phones, smart-phones, and
+              tablets. By exercising this E-Consent, the third party lender may
+              process your information and interact during all online
+              interactions with you electronically. The lender may also send you
+              notices electronically related to its interactions and
+              transactions. Disclosures may be provided online at our or third
+              party lenders' websites, and may be provided by e-mail.
+            </p>
+            <p>
+              <strong>Consenting to Do Business Electronically.</strong> Before
+              you decide to do business electronically with the third party
+              lenders, you should consider whether you have the required
+              hardware and software capabilities described below.
+            </p>
+            <p>
+              <strong>Hardware and Software Requirements.</strong> To access and
+              retain the Disclosures electronically, you will need to use the
+              following computer software and hardware: A PC or MAC compatible
+              computer or other device capable of accessing the Internet, access
+              to an e-mail account, and an Internet Browser software program
+              that supports at least 128 bit encryption, such as Microsoft®
+              Internet Explorer, Netscape® or Mozilla Firefox®. To read some
+              documents, you may need a PDF file reader like Adobe® Acrobat
+              Reader X ® or Foxit®. You will need a printer or a long-term
+              storage device, such as your computer's disk drive, to retain a
+              copy of the Disclosures for future reference. You may send any
+              questions regarding the hardware and software requirements
+              directly to the third party lenders.
+            </p>
+            <p>
+              <strong>Withdrawing Consent.</strong> Your E-Consent for our third
+              party lenders' consideration of your loan request cannot be
+              withdrawn because it is a one-time transaction.If you are
+              connected with one or more third party lenders, you are free to
+              withdraw your E-Consent with those third party lenders at any time
+              and at no charge. However, if you withdraw this E-Consent before
+              receiving credit, you may be prevented from obtaining credit from
+              that lender.Contact the third party lender directly if you wish to
+              withdraw this E-consent.If you decide to withdraw this E-Consent,
+              the legal effectiveness, validity, and enforceability of prior
+              electronic Disclosures will not be affected.
+            </p>
+            <p>
+              <strong>Change to Your Contact Information.</strong> You should
+              keep third party lenders informed of any change in your electronic
+              address or mailing address. You may update such information by
+              logging into the third party lender's website or by sending the
+              lender a written update by mail.
+            </p>
+            <p>
+              <strong>YOUR ABILITY TO ACCESS DISCLOSURES.</strong> BY CLICKING
+              THE LINK, YOU ASSENT TO THE TERMS OF THIS DISCLOSURE . YOU
+              ACKNOWLEDGE THAT YOU CAN ACCESS THE DISCLOSURES IN THE DESIGNATED
+              FORMATS DESCRIBED ABOVE.
+            </p>
+            <p>
+              <strong>CONSENT.</strong> BY CLICKING THE LINK,YOU ACKNOWLEDGE YOU
+              HAVE READ THIS INFORMATION ABOUT ELECTRONIC SIGNATURES, RECORDS,
+              DISCLOSURES, AND DOING BUSINESS ELECTRONICALLY. YOU CONSENT TO
+              USING ELECTRONIC SIGNATURES, HAVING ALL DISCLOSURES PROVIDED OR
+              MADE AVAILABLE TO YOU IN ELECTRONIC FORM AND TO DOING BUSINESS
+              WITH THE LENDER ELECTRONICALLY. YOU ACKNOWLEDGE THAT YOU MAY
+              REQUEST A PAPER COPY OF THE ELECTRONIC RECORDS AND DISCLOSURES,
+              WHICH WILL BE PROVIDED TO YOU AT NO CHARGE. IF YOU REFRAIN FROM
+              PROCEEDING THEN YOU NEITHER WISH TO USE ELECTRONIC SIGNATURES NOR
+              CONDUCT THIS TRANSACTION ELECTRONICALLY. YOU ALSO ACKNOWLEDGE THAT
+              YOUR CONSENT TO ELECTRONIC DISCLOSURES IS REQUIRED TO RECEIVE
+              SERVICES FROM THIRD PARTY LENDERS OVER THE INTERNET.
+            </p>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" onClick={this.toggleEConsent}>Close</Button>
+            <Button color="secondary" onClick={this.toggleEConsent}>
+              Close
+            </Button>
           </ModalFooter>
         </Modal>
-      </div >
+      </div>
     );
   }
 }

@@ -1,0 +1,21 @@
+[
+  {
+    "email": [
+      {
+        "id": "email",
+        "value": "",
+        "type": "email",
+        "name": "email",
+        "placeholder": "Email Address"
+      },
+      {
+        "id": "firstName",
+        "value": "",
+        "type": "text",
+        "name": "firstName",
+        "placeholder": "First Name"
+      }
+    ],
+    "slide": "slide3"
+  }
+]
