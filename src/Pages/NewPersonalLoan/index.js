@@ -13,7 +13,7 @@ import {
 } from "reactstrap";
 import validator from "validator";
 import NumberFormat from 'react-number-format';
-import TooltipItem from "../../Common/tooltipitem";
+import TooltipItem from "../../Common/Tooltip/tooltipitem";
 
 class NewPersonalLoan extends Component {
     constructor(props) {

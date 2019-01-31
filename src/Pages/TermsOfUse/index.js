@@ -4,7 +4,7 @@ import {
     Row,
     Col
 } from "reactstrap";
-import CTAForm from "../../Common/ctaForm";
+import CTAForm from "../../Common/Form/ctaForm";
 class TermsOfUse extends Component {
     render() {
         return (

@@ -14,19 +14,31 @@
     },
     "radio2": {
       "slideName": "slide2",
-      "value": ["1 - 3 Months", "3 - 6 Months", "6 - 12 Months", "1 - 2 Years"],
+      "value": [
+        "1 - 3 Months",
+        "3 - 6 Months",
+        "6 - 12 Months",
+        "1 - 2 Years"
+      ],
       "name": "loanDuration",
       "id": "radio2"
     },
     "radio3": {
       "slideName": "slide7",
-      "value": ["Morning", "Noon", "Night"],
+      "value": [
+        "Morning",
+        "Noon",
+        "Night"
+      ],
       "name": "contactTime",
       "id": "radio3"
     },
     "radio4": {
       "slideName": "slide9",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "activeMilitary",
       "id": "radio4"
     },
@@ -44,13 +56,19 @@
     },
     "radio6": {
       "slideName": "slide13",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "ownYourHome",
       "id": "radio6"
     },
     "radio7": {
       "slideName": "slide14",
-      "value": ["Employment", "Benefits"],
+      "value": [
+        "Employment",
+        "Benefits"
+      ],
       "name": "incomeSource",
       "id": "radio7"
     },
@@ -68,7 +86,12 @@
     },
     "radio9": {
       "slideName": "slide16",
-      "value": ["Weekly", "Bi-Weekly", "Monthly", "Semi-Monthly"],
+      "value": [
+        "Weekly",
+        "Bi-Weekly",
+        "Monthly",
+        "Semi-Monthly"
+      ],
       "name": "iGetPaid",
       "id": "radio9"
     },
@@ -89,19 +112,31 @@
     },
     "radio11": {
       "slideName": "slide26",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "directDeposit",
       "id": "radio11"
     },
     "radio12": {
       "slideName": "slide27",
-      "value": ["One Year or less", "2 Years", "3 Years", "4 Years", "5 Years"],
+      "value": [
+        "One Year or less",
+        "2 Years",
+        "3 Years",
+        "4 Years",
+        "5 Years"
+      ],
       "name": "lengthOfBankAccount",
       "id": "radio12"
     },
     "radio13": {
       "slideName": "slide28",
-      "value": ["Checking", "Savings"],
+      "value": [
+        "Checking",
+        "Savings"
+      ],
       "name": "bankAccountType",
       "id": "radio13"
     },
@@ -130,19 +165,28 @@
     },
     "radio16": {
       "slideName": "slide31",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "moreInCreditCardDebt",
       "id": "radio16"
     },
     "radio17": {
       "slideName": "slide32",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "moreInUnsecuredDebt",
       "id": "radio17"
     },
     "radio18": {
       "slideName": "slide33",
-      "value": ["Yes", "No"],
+      "value": [
+        "Yes",
+        "No"
+      ],
       "name": "affordAggregatedMonthlyPayment",
       "id": "radio18"
     }

@@ -6,7 +6,7 @@ import {
 
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import DonutChartWrapper from "../../Common/donutChart";
+import DonutChartWrapper from "../../Common/Chart/donutChart";
 class LoanRequests extends Component {
     constructor(props) {
         super(props);
@@ -15,9 +15,9 @@ class LoanRequests extends Component {
     }
 
     render() {
-        const donutChartValue1=40;
-        const donutChartValue2=60;
-        const donutChartValue3=80;
+        const donutChartValue1 = 40;
+        const donutChartValue2 = 60;
+        const donutChartValue3 = 80;
         return (
             <div className="account-pages">
                 <Container>
@@ -50,7 +50,7 @@ class LoanRequests extends Component {
                                     <div className="loan-request-row">
                                         <div className="loan-request-column">
                                             <div className="loan-request-icon">
-                                            <DonutChartWrapper value={donutChartValue2} />
+                                                <DonutChartWrapper value={donutChartValue2} />
                                             </div>
                                             <div className="loan-request-text">
                                                 <h3>Began a request for a personal loan </h3>
@@ -65,7 +65,7 @@ class LoanRequests extends Component {
                                     <div className="loan-request-row">
                                         <div className="loan-request-column">
                                             <div className="loan-request-icon">
-                                            <DonutChartWrapper value={donutChartValue3} />
+                                                <DonutChartWrapper value={donutChartValue3} />
                                             </div>
                                             <div className="loan-request-text">
                                                 <h3>Began a request for a personal loan</h3>

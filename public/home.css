@@ -238,23 +238,30 @@ header {
             .banner-section .apply-form-container .apply-form .steps .inner-steps .input-group.success .form-control,
             .banner-section .apply-form-container .apply-form .steps .inner-steps .input-group.success .input-group-prepend {
               border-color: #95c11f; }
-          .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary {
+          .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group.center-content {
+            display: flex;
+            justify-content: center; }
+          .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-primary {
             background: #95c11f;
             border-radius: 0;
             height: 48px;
             border: 0;
-            font-weight: 700; }
-            .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:active, .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:focus, .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-primary:hover {
+            font-weight: 700;
+            width: 100%; }
+            .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-primary:active, .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-primary:focus, .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-primary:hover {
               box-shadow: none; }
-          .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-secondary {
+            .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-primary.smaill {
+              width: 146px; }
+          .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-secondary {
             background: transparent;
             border: 1px solid #ddd !important;
             border-radius: 0;
             height: 48px;
             border: 0;
             color: #888;
-            font-weight: 700; }
-            .banner-section .apply-form-container .apply-form .steps .inner-steps .btn-secondary:hover {
+            font-weight: 700;
+            width: 100%; }
+            .banner-section .apply-form-container .apply-form .steps .inner-steps .form-group .btn-secondary:hover {
               border: 1px solid #bbb !important;
               color: #777; }
       .banner-section .apply-form-container .apply-form h3 {

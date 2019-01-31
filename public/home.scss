@@ -322,29 +322,40 @@ header {
               }
             }
           }
-          .btn-primary {
-            background: $green;
-            border-radius: 0;
-            height: 48px;
-            border: 0;
-            font-weight: 700;
-            &:active,
-            &:focus,
-            &:hover {
-              box-shadow: none;
+          .form-group {
+            &.center-content {
+              display: flex;
+              justify-content: center;
             }
-          }
-          .btn-secondary {
-            background: transparent;
-            border: 1px solid #ddd !important;
-            border-radius: 0;
-            height: 48px;
-            border: 0;
-            color: #888;
-            font-weight: 700;
-            &:hover {
-              border: 1px solid #bbb !important;
-              color: #777;
+            .btn-primary {
+              background: $green;
+              border-radius: 0;
+              height: 48px;
+              border: 0;
+              font-weight: 700;
+              width: 100%;
+              &:active,
+              &:focus,
+              &:hover {
+                box-shadow: none;
+              }
+              &.smaill {
+                width: 146px;
+              }
+            }
+            .btn-secondary {
+              background: transparent;
+              border: 1px solid #ddd !important;
+              border-radius: 0;
+              height: 48px;
+              border: 0;
+              color: #888;
+              font-weight: 700;
+              width: 100%;
+              &:hover {
+                border: 1px solid #bbb !important;
+                color: #777;
+              }
             }
           }
         }

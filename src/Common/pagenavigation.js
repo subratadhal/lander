@@ -3,7 +3,6 @@ import { Container, Row, Col, Nav, NavItem } from "reactstrap";
 import { Link } from "react-router-dom";
 class Pagenavigation extends Component {
     navOnClick = e => {
-        console.log('onClick={this.onClick}');
         window.scrollTo({
             top: 0,
             left: 0,
