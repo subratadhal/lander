@@ -71,7 +71,7 @@ class Banner extends Component {
       password: "",
 
       maxSlider: "35",
-      progressValue: "3",
+      progressValue: "1",
       progressView: true,
       popup: false,
       popupNoThankYou: false,
@@ -148,7 +148,7 @@ class Banner extends Component {
       document.getElementById("slide" + currentSlideID).classList.add("active");
       this.setState({
         currentSlideID: currentSlideID,
-        progressValue: 3 * previousSlide + 3
+        progressValue: 3 * previousSlide + 1
       });
       var i = currentSlideID;
       do {
