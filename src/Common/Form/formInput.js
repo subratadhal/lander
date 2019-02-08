@@ -33,22 +33,37 @@ class FormInput extends Component {
           //   [name + "Style"]: "success"
           // });
 
-          var url = 'https://api.neverbounce.com/v4/single/check?key=' + config.neverbounce_api_key + '&email=' + input;
-          var headerConf = {
+          var url = 'https://api.neverbounce.com/v4/single/check';
+          // var headerConf = {
+          //   headers: {
+          //     'Access-Control-Allow-Origin': '*',
+          //     'Accept': 'application/json',
+          //     'Content-Type': 'application/json;charset=utf-8'
+          //   }
+          // };
+          // axios.post(url, headerConf)
+          //   .then(function (response) {
+          //     console.log(response);
+          //   })
+          //   .catch(function (error) {
+          //     console.log(error);
+          //   });
+          //let url = 'https://api.github.com/users/'+user+'/repos';
+
+
+          fetch(url, {
+            method: 'POST', // or 'PUT'
+            mode: "no-cors", // no-cors, cors, *same-origin
+            credentials: 'same-origin',
+            body: JSON.stringify({ key: config.neverbounce_api_key, email: input }),
             headers: {
-              'Access-Control-Allow-Origin': '*',
-              'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, PATCH, DELETE',
-              'Access-Control-Allow-Headers': 'application/json',
-              'Content-Type': 'application/json;charset=UTF-8'
+              'Content-Type': 'application/json',
+              'Access-Control-Allow-Origin': '*'
             }
-          };
-          axios.post(url, headerConf)
-            .then(function (response) {
-              console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+          }).then(res => res.json())
+            .then(response => console.log('Success:', JSON.stringify(response)))
+            .catch(error => console.error('Error:', error));
+
 
 
         } else {
