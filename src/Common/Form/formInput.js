@@ -3,6 +3,8 @@ import { FormGroup, Input, Label, Button, FormFeedback, Row, Col } from "reactst
 import validator from "validator";
 import { Link } from "react-router-dom";
 import generator from "generate-password";
+import axios from 'axios';
+import config from "../../config.json";
 class FormInput extends Component {
   state = {
     inputs: [],
@@ -25,11 +27,30 @@ class FormInput extends Component {
     } else {
       if (type === "email") {
         if (validator.isEmail(input)) {
-          this.setState({
-            [name + "Error"]: "",
-            [name]: input,
-            [name + "Style"]: "success"
-          });
+          // this.setState({
+          //   [name + "Error"]: "",
+          //   [name]: input,
+          //   [name + "Style"]: "success"
+          // });
+
+          var url = 'https://api.neverbounce.com/v4/single/check?key=' + config.neverbounce_api_key + '&email=' + input;
+          var headerConf = {
+            headers: {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'HEAD, GET, POST, PUT, PATCH, DELETE',
+              'Access-Control-Allow-Headers': 'application/json',
+              'Content-Type': 'application/json;charset=UTF-8'
+            }
+          };
+          axios.post(url, headerConf)
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+
+
         } else {
           this.setState({
             [name + "Error"]: "",
@@ -233,11 +254,11 @@ class FormInput extends Component {
                   <option value="">Choose</option>
                   {item.data.map((d, i) => {
                     return (
-                      <option key={i} value={d} selected={d === this.state[item.id]}>{d}</option>
+                      <option key={i} value={d} >{d}</option>
                     );
                   })}
                 </Input>
-
+                {/* selected={d === this.state[item.id]} */}
                 {this.state[item.id + "Error"] !== "" ? (
                   <FormFeedback style={{ display: "block" }}>
                     {this.state[item.id + "Error"]}

@@ -88,7 +88,7 @@ class Banner extends Component {
     //   return;
     // }
     //var id = e.target.id;
-    //document.getElementById(id).disabled = true;
+
     const c = this.state.currentSlideID;
     if (c >= 2) {
       const c1 = parseInt(this.state.currentSlideID) - 1;
@@ -100,16 +100,16 @@ class Banner extends Component {
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
         document.getElementById("slide" + c1).classList.remove("previous");
-        // if (c !== 2) {
-        //   document.getElementById(id).disabled = false;
-        // }
-      }, 1000);
+
+      }, 100);
       const p = parseInt(this.state.progressValue) - 3;
       this.setState({
         currentSlideID: c1,
         progressValue: p
       });
       localStorage.setItem("currentSlideID", c1);
+      window.history.pushState({ currentSlideID: c1 }, c1);
+
     }
   };
   handleNext = e => {
@@ -131,16 +131,19 @@ class Banner extends Component {
         document.getElementById("slide" + c).classList.remove("active");
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
-      }, 1000);
+      }, 100);
       const p = parseInt(this.state.progressValue) + 3;
       this.setState({
         currentSlideID: c1,
         progressValue: p
       });
       localStorage.setItem("currentSlideID", c1);
+      window.history.pushState({ currentSlideID: c1 }, c1);
+      console.log("handleNext currentSlideID ->", c1)
     }
   };
   setSlider = () => {
+    console.log('setSlider run');
     var currentSlideID = localStorage.getItem("currentSlideID");
     var previousSlide = currentSlideID - 1;
     if (currentSlideID > 1) {
@@ -276,8 +279,51 @@ class Banner extends Component {
     this.getTimeUntil(this.state.deadline);
     document.removeEventListener("keydown", this.escFunction, false);
   }
+  handlePrevious = (e, self) => {
+    const c = this.state.currentSlideID;
+    if (document.getElementById("slide" + c)) {
+      if (c >= 2) {
+        const c1 = parseInt(this.state.currentSlideID) - 1;
+        document.getElementById("slide" + c).classList.add("next");
+        document.getElementById("slide" + c1).classList.add("current");
+        document.getElementById("slide" + c).classList.remove("active");
+        setTimeout(function () {
+          document.getElementById("slide" + c).classList.remove("next");
+          document.getElementById("slide" + c1).classList.add("active");
+          document.getElementById("slide" + c1).classList.remove("current");
+          document.getElementById("slide" + c1).classList.remove("previous");
+        }, 1000);
+        const p = parseInt(this.state.progressValue) - 3;
+        this.setState({
+          currentSlideID: c1,
+          progressValue: p
+        });
+        localStorage.setItem("currentSlideID", c1);
+        window.history.replaceState({ currentSlideID: c1 }, c1);
+        console.log("state currentSlideID ->", c1)
+      }
+    } else {
+      if (document.getElementById("slide" + c) !== null) {
+        setTimeout(function () {
+          self.handlePrevious(e, self);
+        }, 2000);
+      }
+    }
+  };
+
+
   componentDidMount() {
+    let self = this;
     document.addEventListener("keydown", this.escFunction, false);
+
+    //Browser back button
+    window.onpopstate = function (event) {
+      const currentState = event.state;
+      if (currentState) {
+        self.handlePrevious(event, self);
+        console.log("currentState", currentState);
+      }
+    };
     this.setSlider();
   }
   leading0 = num => {
@@ -323,7 +369,7 @@ class Banner extends Component {
   };
 
   render() {
-    //console.log("banner state->", this.state);
+    console.log("banner state->", this.state.currentSlideID);
     const progress = this.state.progressValue;
     const progressView = this.state.progressView;
     const firstName = this.state.firstName;
