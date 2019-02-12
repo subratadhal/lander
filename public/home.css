@@ -1496,5 +1496,13 @@ table {
       flex: 1;
       justify-content: flex-end;
       padding-left: 86px; } }
+.loader {
+  position: absolute;
+  width: 90%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  top: 45%;
+  background: url("spinner.gif") no-repeat 100% -15%; }
 
 /*# sourceMappingURL=home.css.map */

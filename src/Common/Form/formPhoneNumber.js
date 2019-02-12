@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { FormGroup, Label, Button, FormFeedback } from "reactstrap";
 import validator from "validator";
 import NumberFormat from "react-number-format";
+import axios from 'axios';
+import config from "../../config.json";
 class FormPhoneNumber extends Component {
+    constructor(props) {
+        super(props);
+        this.phoneNumberValidator = this.phoneNumberValidator.bind(this);
+    }
     state = {
         inputs: [],
         ids: []
@@ -19,13 +25,7 @@ class FormPhoneNumber extends Component {
                 [name + "Style"]: "error"
             });
         } else {
-            if (input.length > 9) {
-                this.setState({
-                    [name + "Error"]: "",
-                    [name]: input,
-                    [name + "Style"]: "success"
-                });
-            } else {
+            if (validator.isLength(input, { min: 0, max: 10 })) {
                 this.setState({
                     [name + "Error"]: "",
                     [name]: input,
@@ -35,6 +35,33 @@ class FormPhoneNumber extends Component {
         }
         this.props.onChange("0", input, name);
     };
+
+    phoneNumberValidator(e, input, name) {
+        let self = this;
+        axios.get('https://proapi.whitepages.com/3.3/identity_check?api_key=' + config.whitepages_ic_key + '&primary.phone=' + input)
+            .then(function (response) {
+                if (response.data.primary_phone_checks.is_valid) {
+                    console.log(response.data.primary_phone_checks.is_valid);
+                    self.setState({
+                        [name + "Error"]: "",
+                        [name]: input,
+                        [name + "Style"]: "success"
+                    });
+                    self.props.inputOnClick(e);
+                } else {
+                    self.setState({
+                        [name + "Error"]: "This is not a valid number",
+                        [name]: input,
+                        [name + "Style"]: "error"
+                    });
+                }
+            })
+            .catch(function (error) {
+                console.log(error);
+            });
+        //https://pro.lookup.whitepages.com/api/dashboard#requests-responses
+        //https://pro.whitepages.com/developer/documentation/api-overview/#tag/Reverse-Phone-API/paths/~13.1~1phone/get
+    }
     buttonOnClick = e => {
         var idArray = this.state.ids;
         var i = 0;
@@ -53,12 +80,7 @@ class FormPhoneNumber extends Component {
                 });
             } else {
                 if (input.length > 9) {
-                    this.setState({
-                        [name + "Error"]: "",
-                        [name]: input,
-                        [name + "Style"]: "success"
-                    });
-                    this.props.inputOnClick(e);
+                    this.phoneNumberValidator(e, input, name);
                 } else {
                     this.setState({
                         [name + "Error"]: "This is not a valid " + placeholder,

@@ -1,4 +1,7 @@
 {
 	"neverbounce_api_key": "private_4875b8ed290a6005554b768e151ceb36",
-	"siteurl": "http://csrportal.enetdefender.com"
+	"smartystreetsAuthID": "5d2fe40e-8d10-1771-ea10-39f87af84edb",
+	"smartystreetsAuthToken": "6985047565913178",
+	"whitepages_ic_key": "87ee22790e2846c48089e36ae1c1b541",
+	"apiServerURL": "http://localhost:3001"
 }

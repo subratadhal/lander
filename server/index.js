@@ -1,7 +1,9 @@
 // server/index.js
-"use strict";
 
 const app = require("./app");
+
+var routes = require('./routes/routes');
+routes(app);
 
 const PORT = process.env.PORT || 3001;
 

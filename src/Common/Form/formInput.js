@@ -11,10 +11,115 @@ class FormInput extends Component {
     ids: [],
     passwordSuggestion: "",
     passwordSuggestionWrapper: false,
+    loader: false
   };
+  emailValidatorOnClick = (e, email, name) => {
+    let input = email;
+    if (validator.isEmail(input)) {
+      let self = this;
+      self.setState({ loader: true });
+      const contact = {
+        email: input
+      }
+      axios.post('' + config.apiServerURL + '/emailvalidate', contact)
+        .then(function (response) {
+
+          if ((response.data.message === "catchall") || (response.data.message === "valid")) {
+            self.setState({
+              [name + "Error"]: "",
+              [name]: input,
+              [name + "Style"]: "success"
+            });
+            self.props.inputOnClick(e);
+          } else {
+            self.setState({
+              [name + "Error"]: "Invalid email address",
+              [name]: input,
+              [name + "Style"]: "error"
+            });
+          }
+          self.setState({ loader: false });
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    } else {
+      this.setState({
+        [name + "Error"]: "",
+        [name]: input,
+        [name + "Style"]: ""
+      });
+    }
+  }
+  emailValidatorOnChange = (email, name) => {
+    let input = email;
+    this.setState({
+      [name + "Error"]: "",
+      [name]: input,
+      [name + "Style"]: "",
+      validEmail: false
+    });
+  }
+  zipValidatorOnChange = (input, name) => {
+    if (validator.isLength(input, { min: 5, max: 5 })) {
+      this.setState({
+        [name + "Error"]: "",
+        [name]: input,
+        [name + "Style"]: ""
+      });
+    } else {
+      if (validator.isLength(input, { min: 0, max: 5 })) {
+        this.setState({
+          [name + "Error"]: "",
+          [name]: input,
+          [name + "Style"]: ""
+        });
+      }
+    }
+  }
+  zipValidatorOnClick = (e, input, name) => {
+    if (validator.isLength(input, { min: 5, max: 5 })) {
+      let self = this;
+
+      axios.get('https://us-zipcode.api.smartystreets.com/lookup?auth-id=' + config.smartystreetsAuthID + '&auth-token=' + config.smartystreetsAuthToken + '&zipcode=' + input
+      )
+        .then(function (response) {
+          if (response.data[0].status) {
+            self.setState({
+              [name + "Error"]: "Invalid zip code",
+              [name]: input,
+              [name + "Style"]: "error"
+            });
+          } else {
+            console.log(response);
+            self.setState({
+              [name + "Error"]: "",
+              [name]: input,
+              [name + "Style"]: "success"
+            });
+            self.props.onChange(e, response.data[0].city_states[0].city, "city");
+            self.props.onChange(e, response.data[0].city_states[0].state, "state");
+            self.props.inputOnClick(e);
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+    } else {
+      if (validator.isLength(input, { min: 0, max: 5 })) {
+        this.setState({
+          [name + "Error"]: "Not a valid zip code",
+          [name]: input,
+          [name + "Style"]: "error"
+        });
+      }
+    }
+  }
   inputOnChange = e => {
     const placeholder = e.target.placeholder ? e.target.placeholder : e.target.name; //condition required for select as select have no placeholder
     const name = e.target.name;
+    console.log('name', name);
     const input = e.target.value ? e.target.value : "";
     const type = e.target.type;
 
@@ -26,53 +131,7 @@ class FormInput extends Component {
       });
     } else {
       if (type === "email") {
-        if (validator.isEmail(input)) {
-          // this.setState({
-          //   [name + "Error"]: "",
-          //   [name]: input,
-          //   [name + "Style"]: "success"
-          // });
-
-          var url = 'https://api.neverbounce.com/v4/single/check';
-          // var headerConf = {
-          //   headers: {
-          //     'Access-Control-Allow-Origin': '*',
-          //     'Accept': 'application/json',
-          //     'Content-Type': 'application/json;charset=utf-8'
-          //   }
-          // };
-          // axios.post(url, headerConf)
-          //   .then(function (response) {
-          //     console.log(response);
-          //   })
-          //   .catch(function (error) {
-          //     console.log(error);
-          //   });
-          //let url = 'https://api.github.com/users/'+user+'/repos';
-
-
-          fetch(url, {
-            method: 'POST', // or 'PUT'
-            mode: "no-cors", // no-cors, cors, *same-origin
-            credentials: 'same-origin',
-            body: JSON.stringify({ key: config.neverbounce_api_key, email: input }),
-            headers: {
-              'Content-Type': 'application/json',
-              'Access-Control-Allow-Origin': '*'
-            }
-          }).then(res => res.json())
-            .then(response => console.log('Success:', JSON.stringify(response)))
-            .catch(error => console.error('Error:', error));
-
-
-
-        } else {
-          this.setState({
-            [name + "Error"]: "",
-            [name]: input,
-            [name + "Style"]: ""
-          });
-        }
+        this.emailValidatorOnChange(input, name);
       } else if (type === "password") {
         if (validator.isLength(input, { min: 6, max: 15 })) {
           this.setState({
@@ -87,6 +146,8 @@ class FormInput extends Component {
             [name + "Style"]: "error"
           });
         }
+      } else if (name === 'zipCode') {
+        this.zipValidatorOnChange(input, name);
       } else {
         this.setState({
           [name + "Error"]: "",
@@ -107,7 +168,6 @@ class FormInput extends Component {
       var placeholder = id.placeholder;
       var name = id.name;
       var type = id.type;
-
       if (validator.isEmpty(input)) {
         this.setState({
           [name + "Error"]: placeholder + " is required",
@@ -117,20 +177,7 @@ class FormInput extends Component {
         return;
       } else {
         if (type === "email") {
-          if (validator.isEmail(input)) {
-            this.setState({
-              [name + "Error"]: "",
-              [name]: input,
-              [name + "Style"]: "success"
-            });
-          } else {
-            this.setState({
-              [name + "Error"]: "Invalid " + placeholder,
-              [name]: input,
-              [name + "Style"]: "error"
-            });
-            return;
-          }
+          this.emailValidatorOnClick(e, input, name);
         } else if (type === "password") {
           if (validator.isLength(input, { min: 6, max: 15 })) {
             this.setState({
@@ -145,6 +192,8 @@ class FormInput extends Component {
               [name + "Style"]: "error"
             });
           }
+        } else if (name === 'zipCode') {
+          this.zipValidatorOnClick(e, input, name);
         } else {
           this.setState({
             [name + "Error"]: "",
@@ -157,8 +206,24 @@ class FormInput extends Component {
 
       i++;
     } while (i < idArray.length);
-    this.props.inputOnClick(e);
+
+    if ((type !== "email") && name !== "zipCode") {
+      this.props.inputOnClick(e);
+    }
+
+
   };
+  componentWillReceiveProps(nextProps) {
+    var parentProps = nextProps.inputCurrentProps ? nextProps.inputCurrentProps : '';
+    if (parentProps !== 'undefined') {
+      if (parentProps.city !== '') {
+        this.setState({
+          city: parentProps.city,
+          state: parentProps.state
+        });
+      }
+    }
+  }
   componentDidMount() {
     const inputs = Array.from(this.props.inputProps);
     this.setState({
@@ -232,9 +297,11 @@ class FormInput extends Component {
   };
 
   render() {
+
     const inputSlide = this.props.inputSlide;
     const passwordSuggestion = this.state.passwordSuggestion;
     const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
+    const loader = this.state.loader;
     var smVal = "";
     if (inputSlide === "slide25") {
       smVal = 12;
@@ -285,6 +352,8 @@ class FormInput extends Component {
             </Col>
           ) : (
               <Col sm={(item.placeholder === "Street Address") ? "12" : smVal} key={"lk" + index}>
+                {loader ? (<div className="loader">
+                </div>) : ''}
                 <FormGroup key={"k" + index}>
                   <Label for={item.placeholder} className="bold">
                     {item.placeholder}

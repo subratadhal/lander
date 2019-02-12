@@ -369,7 +369,7 @@ class Banner extends Component {
   };
 
   render() {
-    console.log("banner state->", this.state.currentSlideID);
+    console.log("banner state->", this.state);
     const progress = this.state.progressValue;
     const progressView = this.state.progressView;
     const firstName = this.state.firstName;
@@ -558,7 +558,6 @@ class Banner extends Component {
                         inputProps={inputData[3]["dob"]}
                         inputSlide={inputData[3]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps" id="slide9">
@@ -598,6 +597,7 @@ class Banner extends Component {
                       <FormInput
                         inputOnClick={this.inputOnClick}
                         onChange={this.inputOnChange}
+                        inputCurrentProps={this.state}
                         inputProps={inputData[4]["zipCode"]}
                         inputSlide={inputData[4]["slide"]}
                       />
@@ -617,6 +617,7 @@ class Banner extends Component {
                       <FormInput
                         inputOnClick={this.inputOnClick}
                         onChange={this.inputOnChange}
+                        inputCurrentProps={this.state}
                         inputProps={inputData[5]["contactAddress"]}
                         inputSlide={inputData[5]["slide"]}
                       />
