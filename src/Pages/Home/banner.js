@@ -1062,7 +1062,7 @@ class Banner extends Component {
                     />
                     <div className="inner-steps">
                       <h3 id="" className="title current">
-                        Length of Bank Account
+                        Credit Score
                       </h3>
                       <RadioInput
                         onChange={this.radioOnChange}
