@@ -95,12 +95,11 @@ class Banner extends Component {
       document.getElementById("slide" + c).classList.add("next");
       document.getElementById("slide" + c1).classList.add("current");
       document.getElementById("slide" + c).classList.remove("active");
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById("slide" + c).classList.remove("next");
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
         document.getElementById("slide" + c1).classList.remove("previous");
-
       }, 100);
       const p = parseInt(this.state.progressValue) - 3;
       this.setState({
@@ -109,7 +108,6 @@ class Banner extends Component {
       });
       localStorage.setItem("currentSlideID", c1);
       window.history.pushState({ currentSlideID: c1 }, c1);
-
     }
   };
   handleNext = e => {
@@ -127,7 +125,7 @@ class Banner extends Component {
       const c1 = parseInt(this.state.currentSlideID) + 1;
       document.getElementById("slide" + c).classList.add("previous");
       document.getElementById("slide" + c1).classList.add("current");
-      setTimeout(function () {
+      setTimeout(function() {
         document.getElementById("slide" + c).classList.remove("active");
         document.getElementById("slide" + c1).classList.add("active");
         document.getElementById("slide" + c1).classList.remove("current");
@@ -139,11 +137,11 @@ class Banner extends Component {
       });
       localStorage.setItem("currentSlideID", c1);
       window.history.pushState({ currentSlideID: c1 }, c1);
-      console.log("handleNext currentSlideID ->", c1)
+      console.log("handleNext currentSlideID ->", c1);
     }
   };
   setSlider = () => {
-    console.log('setSlider run');
+    console.log("setSlider run");
     var currentSlideID = localStorage.getItem("currentSlideID");
     var previousSlide = currentSlideID - 1;
     if (currentSlideID > 1) {
@@ -174,10 +172,10 @@ class Banner extends Component {
   popupAction = val => {
     var self = this;
     var i = 1;
-    setTimeout(function () {
+    setTimeout(function() {
       document.getElementById("popupStep1").classList.add("active");
     }, 500);
-    var x = setInterval(function () {
+    var x = setInterval(function() {
       if (i === 4) {
         clearInterval(x);
         self.setState({
@@ -190,9 +188,10 @@ class Banner extends Component {
           self.setState({
             popupOffer: true
           });
-          setTimeout(function () {
-            self.props.history.push("/offers");
-          }, 5000);
+
+          // setTimeout(function() {
+          //   self.props.history.push("/offers");
+          // }, 5000);
         } else {
         }
       } else {
@@ -287,7 +286,7 @@ class Banner extends Component {
         document.getElementById("slide" + c).classList.add("next");
         document.getElementById("slide" + c1).classList.add("current");
         document.getElementById("slide" + c).classList.remove("active");
-        setTimeout(function () {
+        setTimeout(function() {
           document.getElementById("slide" + c).classList.remove("next");
           document.getElementById("slide" + c1).classList.add("active");
           document.getElementById("slide" + c1).classList.remove("current");
@@ -300,24 +299,128 @@ class Banner extends Component {
         });
         localStorage.setItem("currentSlideID", c1);
         window.history.replaceState({ currentSlideID: c1 }, c1);
-        console.log("state currentSlideID ->", c1)
+        console.log("state currentSlideID ->", c1);
       }
     } else {
       if (document.getElementById("slide" + c) !== null) {
-        setTimeout(function () {
+        setTimeout(function() {
           self.handlePrevious(e, self);
         }, 2000);
       }
     }
   };
 
+  dateConvert = str => {
+    var date = new Date(str),
+      mnth = ("0" + (date.getMonth() + 1)).slice(-2),
+      day = ("0" + date.getDate()).slice(-2);
+    return [day, mnth, date.getFullYear()].join("/");
+  };
 
   componentDidMount() {
+    // post application --------------------------------------
+    let loanApplicationNumber =
+      "loanapp" + Math.floor(Math.random() * 1000000000);
+    let dob =
+      localStorage.getItem("day") +
+      "/" +
+      localStorage.getItem("month") +
+      "/" +
+      localStorage.getItem("year");
+    const mgi = localStorage.getItem("monthlyGrossIncome").split(" ");
+    const monthlyGrossIncome = mgi.pop().replace("$", "");
+    const la = localStorage.getItem("loanAmount").split(" ");
+    const actualloanamount = la[0].replace("$", "");
+    const loanAmount = parseInt(actualloanamount);
+    var activeMilitary = localStorage.getItem("activeMilitary");
+    if (activeMilitary === "Yes") {
+      activeMilitary = 1;
+    } else {
+      activeMilitary = 0;
+    }
+    var ownHome = localStorage.getItem("ownYourHome");
+    if (ownHome === "Yes") {
+      ownHome = 1;
+    } else {
+      ownHome = 0;
+    }
+    var directDeposit = localStorage.getItem("directDeposit");
+    if (directDeposit === "Yes") {
+      directDeposit = 1;
+    } else {
+      directDeposit = 0;
+    }
+    var getPaid = localStorage.getItem("iGetPaid");
+    if (getPaid === "Weekly") {
+      getPaid = "WEEKLY";
+    } else if (getPaid === "Bi-Weekly") {
+      getPaid = "BIWEEKLY";
+    } else if (getPaid === "Monthly") {
+      getPaid = "MONTHLY";
+    } else if (getPaid === "Semi-Monthly") {
+      getPaid = "TWICEMONTHLY";
+    }
+    var lba = localStorage.getItem("lengthOfBankAccount").split(" ");
+    const lengthOfBankAccount = parseInt(lba[0]);
+    const ld = localStorage.getItem("howLongLived").split(" ");
+    const livingDuration = parseInt(ld[0]);
+
+    let applicationData = {
+      customerId: localStorage.getItem("email"),
+      loanApplicationNumber: loanApplicationNumber,
+      loanAmount: loanAmount,
+      loanPeriod: localStorage.getItem("loanDuration"),
+      emailAddress: localStorage.getItem("email"),
+      firstName: localStorage.getItem("firstName"),
+      lastName: localStorage.getItem("lastName"),
+      phoneNumber: localStorage.getItem("contactNumber"),
+      contactTime: localStorage.getItem("contactTime"),
+      birthDate: dob,
+      activeMilitary: activeMilitary,
+      zipCode: localStorage.getItem("zipCode"),
+      streetAddress: localStorage.getItem("streetAddress"),
+      city: localStorage.getItem("city"),
+      state: localStorage.getItem("state"),
+      livingDuration: livingDuration,
+      ownHome: ownHome,
+      incomeSource: localStorage.getItem("incomeSource").toUpperCase(),
+      timeEmployed: localStorage.getItem("timeEmployed"),
+      getPaid: getPaid,
+      monthlyGrossIncome: monthlyGrossIncome,
+      nextPayDate: this.dateConvert(localStorage.getItem("nextPayDate")),
+      employerName: localStorage.getItem("employerName"),
+      employerPhoneNumber: localStorage.getItem("employerPhoneNumber"),
+      idProof: localStorage.getItem("driversLicenseOrStateID"),
+      licenseState: localStorage.getItem("licenseState"),
+      ssn: localStorage.getItem("socialSecurityNumber"),
+      abaRoutingNumber: localStorage.getItem("ABARoutingNumber"),
+      bankName: localStorage.getItem("bankName"),
+      bankAccountNumber: localStorage.getItem("bankAccountNumber"),
+      directDeposit: directDeposit,
+      lengthOfBankAccount: lengthOfBankAccount,
+      bankAccountType: localStorage.getItem("bankAccountType").toUpperCase(),
+      creditScore: localStorage.getItem("creditScore").toUpperCase(),
+      loanReason: localStorage
+        .getItem("loanReason")
+        .toUpperCase()
+        .replace(" ", ""),
+      creditCardDebt: localStorage.getItem("moreInCreditCardDebt"),
+      unsecureDebt: localStorage.getItem("moreInUnsecuredDebt"),
+      aggregatedMonthlyPayment: localStorage.getItem(
+        "affordAggregatedMonthlyPayment"
+      ),
+      loanSubmission: ""
+    };
+
+    console.log(applicationData);
+
+    //-----------------------------------
+
     let self = this;
     document.addEventListener("keydown", this.escFunction, false);
 
     //Browser back button
-    window.onpopstate = function (event) {
+    window.onpopstate = function(event) {
       const currentState = event.state;
       if (currentState) {
         self.handlePrevious(event, self);
@@ -389,8 +492,8 @@ class Banner extends Component {
                   <div className="progress-value">{progress}%</div>
                 </div>
               ) : (
-                  ""
-                )}
+                ""
+              )}
             </Col>
             <Col sm="8">
               <div className="apply-form-container">
@@ -809,7 +912,6 @@ class Banner extends Component {
                         inputProps={inputData[13]["employerPhoneNumber"]}
                         inputSlide={inputData[13]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide21">
@@ -830,7 +932,6 @@ class Banner extends Component {
                         inputProps={inputData[8]["driversLicenseOrStateID"]}
                         inputSlide={inputData[8]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide22">
@@ -851,7 +952,6 @@ class Banner extends Component {
                         inputProps={inputData[9]["licenseState"]}
                         inputSlide={inputData[9]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide23">
@@ -877,7 +977,6 @@ class Banner extends Component {
                         inputProps={inputData[14]["socialSecurityNumber"]}
                         inputSlide={inputData[14]["slide"]}
                       />
-
 
                       {/* <FormGroup>
                         <InputGroup className={socialSecurityNumberInputStyle}>
@@ -957,7 +1056,6 @@ class Banner extends Component {
                         inputProps={inputData[10]["ABARoutingNumber"]}
                         inputSlide={inputData[10]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide25">
@@ -982,7 +1080,6 @@ class Banner extends Component {
                         inputProps={inputData[11]["bankingInformation"]}
                         inputSlide={inputData[11]["slide"]}
                       />
-
                     </div>
                   </div>
                   <div className="steps " id="slide26">
@@ -1200,7 +1297,7 @@ class Banner extends Component {
                           className="mt15"
                         >
                           Finish Now
-                      </Button>
+                        </Button>
                       </FormGroup>
                     </div>
                   </div>
@@ -1214,12 +1311,12 @@ class Banner extends Component {
                         {cancelTimer ? (
                           <span className="red">Any Second!</span>
                         ) : (
-                            <span className="red">
-                              {this.leading0(this.state.minutes)}{" "}
-                              {minutes === 0 ? "Minute" : "Minutes"}{" "}
-                              {this.leading0(this.state.seconds)} Seconds
+                          <span className="red">
+                            {this.leading0(this.state.minutes)}{" "}
+                            {minutes === 0 ? "Minute" : "Minutes"}{" "}
+                            {this.leading0(this.state.seconds)} Seconds
                           </span>
-                          )}
+                        )}
                         <strong className="responsive-text">
                           Submit below to request your loan now!
                         </strong>
@@ -1259,7 +1356,7 @@ class Banner extends Component {
                           className="mt15"
                         >
                           Click to Comtinue
-                      </Button>
+                        </Button>
                         <Button
                           onClick={this.slide35noThanksOnClick}
                           type="button"
@@ -1267,7 +1364,7 @@ class Banner extends Component {
                           className="mt15"
                         >
                           No Thanks
-                      </Button>
+                        </Button>
                       </FormGroup>
                     </div>
                   </div>
@@ -1327,8 +1424,8 @@ class Banner extends Component {
             </div>
           </div>
         ) : (
-            ""
-          )}
+          ""
+        )}
         {popupNoThankYou ? (
           <div className="popup">
             <div className="popup-inner small-popup">
@@ -1362,8 +1459,8 @@ class Banner extends Component {
             </div>
           </div>
         ) : (
-            ""
-          )}
+          ""
+        )}
         {popupOffer ? (
           <div className="popup">
             <div className="popup-inner small-popup">
@@ -1381,8 +1478,8 @@ class Banner extends Component {
             </div>
           </div>
         ) : (
-            ""
-          )}
+          ""
+        )}
         <Modal
           isOpen={this.state.modal}
           toggle={this.toggleEConsent}
