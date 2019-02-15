@@ -7,7 +7,7 @@ import {
     InputGroup, InputGroupAddon, FormFeedback
 } from "reactstrap";
 import validator from "validator";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import generator from 'generate-password';
 class Login extends Component {
     constructor(props) {
@@ -20,7 +20,8 @@ class Login extends Component {
             passwordError: "",
             passwordInputStyle: "",
             passwordSuggestion: '',
-            passwordSuggestionWrapper: false
+            passwordSuggestionWrapper: false,
+            redirectToReferrer: false
         }
     }
     loginOnClick = e => {
@@ -134,6 +135,7 @@ class Login extends Component {
             });
         }
     }
+
     render() {
         console.log(this.state);
         const emailError = this.state.emailError;
@@ -143,6 +145,16 @@ class Login extends Component {
         const passwordInputStyle = this.state.passwordInputStyle;
         const passwordSuggestion = this.state.passwordSuggestion;
         const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
+
+        const { from } = this.props.location.state || { from: { pathname: '/' } }
+        const { redirectToReferrer } = this.state;
+
+        if (redirectToReferrer) {
+            return (
+                <Redirect to={from} />
+            )
+        }
+
         return (
             <div className="page-container" onClick={this.bodyOnClick}>
                 <Container>
@@ -206,7 +218,7 @@ class Login extends Component {
                                     ) : (
                                             ""
                                         )}
-                                    <Button color="primary" onClick={this.loginOnClick}>Log In</Button>{' '}
+                                    <Button color="primary" onClick={this.login}>Log In</Button>{' '}
 
                                     {/* <p>New to LendingTree?  <Link to="/">Create a free account</Link></p>
                                     <hr /> */}

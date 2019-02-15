@@ -26,12 +26,44 @@ import NewPersonalLoan from "./Pages/NewPersonalLoan";
 import LoanRequests from "./Pages/LoanRequests";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
+import cookie from 'react-cookies'
+
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      userId: ''
+    }
+  }
+  componentWillMount() {
+    this.setState({
+      userId: cookie.load('userId')
+    });
+  }
+
+  login = () => {
+
+    cookie.save('userId', 'subrata', { path: '/' });
+    this.setState({
+      userId: cookie.load('userId')
+    });
+  }
+  logout = () => {
+    cookie.remove('userId', { path: '/' });
+    this.setState({
+      userId: ''
+    });
+  }
   render() {
+    const { userId } = this.state;
     return (
       <Router>
         <div className="wrapper">
+          <button onClick={this.login}>Login</button>
+          <button onClick={this.logout}>Logout</button>
+          {userId}
           <Header />
+
           <Switch>
             <Route exact path="/" component={Home} />
             <Route exact path="/thankyou" component={Thankyou} />

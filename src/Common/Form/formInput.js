@@ -210,8 +210,6 @@ class FormInput extends Component {
     if ((type !== "email") && name !== "zipCode") {
       this.props.inputOnClick(e);
     }
-
-
   };
   componentWillReceiveProps(nextProps) {
     var parentProps = nextProps.inputCurrentProps ? nextProps.inputCurrentProps : '';
@@ -303,7 +301,7 @@ class FormInput extends Component {
     const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
     const loader = this.state.loader;
     var smVal = "";
-    if (inputSlide === "slide25") {
+    if (inputSlide === "slide24") {
       smVal = 12;
     } else if (inputSlide === "slide11") {
       smVal = 6;

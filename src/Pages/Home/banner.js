@@ -24,6 +24,7 @@ import radioData from "../../JsonData/radioButtonsData.json";
 import inputData from "../../JsonData/inputData.json";
 import { confirmAlert } from "react-confirm-alert";
 import "react-confirm-alert/src/react-confirm-alert.css";
+import cookie from "cookie";
 class Banner extends Component {
   constructor(props) {
     super(props);
@@ -70,7 +71,7 @@ class Banner extends Component {
       affordAggregatedMonthlyPayment: "",
       password: "",
 
-      maxSlider: "35",
+      maxSlider: "34",
       progressValue: "1",
       progressView: true,
       popup: false,
@@ -84,11 +85,6 @@ class Banner extends Component {
     };
   }
   handlePreview = e => {
-    // if (e.keyCode == 9) {  //tab pressed
-    //   return;
-    // }
-    //var id = e.target.id;
-
     const c = this.state.currentSlideID;
     if (c >= 2) {
       const c1 = parseInt(this.state.currentSlideID) - 1;
@@ -113,18 +109,16 @@ class Banner extends Component {
     }
   };
   handleNext = e => {
-    // if (e.keyCode === 9) {
-    //   console.log("tab");
-    //   return;
-    // }
     window.scrollTo({
       top: 0,
       left: 0,
       behavior: "smooth"
     });
-    const c = this.state.currentSlideID;
-    if (c < this.state.maxSlider) {
+    const c = parseInt(this.state.currentSlideID);
+    const m = parseInt(this.state.maxSlider);
+    if (c < m) {
       const c1 = parseInt(this.state.currentSlideID) + 1;
+      console.log('c1', c1);
       document.getElementById("slide" + c).classList.add("previous");
       document.getElementById("slide" + c1).classList.add("current");
       setTimeout(function () {
@@ -521,7 +515,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide7">
+                  {/* <div className="steps" id="slide7">
                     <Button
                       type="button"
                       color="primary"
@@ -540,8 +534,8 @@ class Banner extends Component {
                         slideName={radioData[0]["radio3"].slideName}
                       />
                     </div>
-                  </div>
-                  <div className="steps" id="slide8">
+                  </div> */}
+                  <div className="steps" id="slide7">
                     <Button
                       type="button"
                       color="primary"
@@ -560,7 +554,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide9">
+                  <div className="steps" id="slide8">
                     <Button
                       type="button"
                       color="primary"
@@ -580,7 +574,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide10">
+                  <div className="steps" id="slide9">
                     <Button
                       type="button"
                       color="primary"
@@ -603,7 +597,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide11">
+                  <div className="steps " id="slide10">
                     <Button
                       type="button"
                       color="primary"
@@ -623,7 +617,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide12">
+                  <div className="steps " id="slide11">
                     <Button
                       type="button"
                       color="primary"
@@ -643,7 +637,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide13">
+                  <div className="steps " id="slide12">
                     <Button
                       type="button"
                       color="primary"
@@ -663,7 +657,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide14">
+                  <div className="steps" id="slide13">
                     <Button
                       type="button"
                       color="primary"
@@ -683,7 +677,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide15">
+                  <div className="steps " id="slide14">
                     <Button
                       type="button"
                       color="primary"
@@ -703,7 +697,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide16">
+                  <div className="steps " id="slide15">
                     <Button
                       type="button"
                       color="primary"
@@ -723,7 +717,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide17">
+                  <div className="steps" id="slide16">
                     <Button
                       type="button"
                       color="primary"
@@ -743,7 +737,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide18">
+                  <div className="steps " id="slide17">
                     <Button
                       type="button"
                       color="primary"
@@ -762,7 +756,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps" id="slide19">
+                  <div className="steps" id="slide18">
                     <Button
                       type="button"
                       color="primary"
@@ -786,7 +780,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide20">
+                  <div className="steps " id="slide19">
                     <Button
                       type="button"
                       color="primary"
@@ -812,7 +806,7 @@ class Banner extends Component {
 
                     </div>
                   </div>
-                  <div className="steps " id="slide21">
+                  <div className="steps " id="slide20">
                     <Button
                       type="button"
                       color="primary"
@@ -833,7 +827,7 @@ class Banner extends Component {
 
                     </div>
                   </div>
-                  <div className="steps " id="slide22">
+                  <div className="steps " id="slide21">
                     <Button
                       type="button"
                       color="primary"
@@ -854,7 +848,7 @@ class Banner extends Component {
 
                     </div>
                   </div>
-                  <div className="steps " id="slide23">
+                  <div className="steps " id="slide22">
                     <Button
                       type="button"
                       color="primary"
@@ -878,61 +872,9 @@ class Banner extends Component {
                         inputSlide={inputData[14]["slide"]}
                       />
 
-
-                      {/* <FormGroup>
-                        <InputGroup className={socialSecurityNumberInputStyle}>
-                          <Label for="socialSecurityNumber">
-                            Please enter the last 4 digits of your SSN{" "}
-                            <span
-                              className="tooltip-icon"
-                              id={"Tooltip-" + this.state.tooltips[0].id}
-                            >
-                              ?
-                            </span>{" "}
-                          </Label>
-                          <TooltipItem
-                            key={this.state.tooltips[0].id}
-                            item={this.state.tooltips[0].text}
-                            id={this.state.tooltips[0].id}
-                          />
-                          <div className="from-center">
-                            <Input
-                              type="password"
-                              name="socialSecurityNumber"
-                              id="socialSecurityNumber"
-                              autoComplete="nope"
-                              placeholder="xxxx"
-                              onChange={
-                                this.slide23socialSecurityNumberOnChange
-                              }
-                            />
-                            <InputGroupAddon addonType="prepend">
-                              <span className="password-icon" />
-                            </InputGroupAddon>
-                          </div>
-                          {socialSecurityNumberError !== "" ? (
-                            <FormFeedback
-                              className="feedback-center"
-                              style={{ display: "block" }}
-                            >
-                              {socialSecurityNumberError}
-                            </FormFeedback>
-                          ) : (
-                              ""
-                            )}
-                        </InputGroup>
-                      </FormGroup>
-                      <Button
-                        onClick={this.slide23socialSecurityNumberOnClick}
-                        type="button"
-                        color="primary"
-                        className="mt15"
-                      >
-                        Next
-                      </Button> */}
                     </div>
                   </div>
-                  <div className="steps " id="slide24">
+                  <div className="steps " id="slide23">
                     <Button
                       type="button"
                       color="primary"
@@ -960,7 +902,7 @@ class Banner extends Component {
 
                     </div>
                   </div>
-                  <div className="steps " id="slide25">
+                  <div className="steps " id="slide24">
                     <Button
                       type="button"
                       color="primary"
@@ -985,7 +927,7 @@ class Banner extends Component {
 
                     </div>
                   </div>
-                  <div className="steps " id="slide26">
+                  <div className="steps " id="slide25">
                     <Button
                       type="button"
                       color="primary"
@@ -1009,7 +951,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide27">
+                  <div className="steps " id="slide26">
                     <Button
                       type="button"
                       color="primary"
@@ -1029,7 +971,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide28">
+                  <div className="steps " id="slide27">
                     <Button
                       type="button"
                       color="primary"
@@ -1053,7 +995,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide29">
+                  <div className="steps " id="slide28">
                     <Button
                       type="button"
                       color="primary"
@@ -1073,7 +1015,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide30">
+                  <div className="steps " id="slide29">
                     <Button
                       type="button"
                       color="primary"
@@ -1093,7 +1035,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide31">
+                  <div className="steps " id="slide30">
                     <Button
                       type="button"
                       color="primary"
@@ -1117,7 +1059,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide32">
+                  <div className="steps " id="slide31">
                     <Button
                       type="button"
                       color="primary"
@@ -1141,7 +1083,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide33">
+                  <div className="steps " id="slide32">
                     <Button
                       type="button"
                       color="primary"
@@ -1161,7 +1103,7 @@ class Banner extends Component {
                       />
                     </div>
                   </div>
-                  <div className="steps " id="slide34">
+                  <div className="steps " id="slide33">
                     <Button
                       type="button"
                       color="primary"
@@ -1204,7 +1146,7 @@ class Banner extends Component {
                       </FormGroup>
                     </div>
                   </div>
-                  <div className="steps " id="slide35">
+                  <div className="steps " id="slide34">
                     <div className="inner-steps">
                       <h3 id="" className="title current">
                         {firstName} HURRY! GET YOUR CASH BEFORE TIME RUNS OUT!

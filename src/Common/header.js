@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import logo from "../Pages/Home/logo.png";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import {
   Container, Row, Col,
   Collapse,
@@ -28,6 +28,7 @@ class Header extends Component {
       isOpen: !this.state.isOpen
     });
   }
+
   render() {
     return (
       <header>
@@ -79,4 +80,4 @@ class Header extends Component {
   }
 }
 
-export default Header;
+export default withRouter(Header);

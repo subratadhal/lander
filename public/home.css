@@ -270,7 +270,6 @@ header {
         font-weight: 700;
         font-size: 26px;
         text-align: center; }
-      .banner-section .apply-form-container .apply-form .slide33-radio,
       .banner-section .apply-form-container .apply-form .slide32-radio,
       .banner-section .apply-form-container .apply-form .slide31-radio,
       .banner-section .apply-form-container .apply-form .slide30-radio,
@@ -278,13 +277,14 @@ header {
       .banner-section .apply-form-container .apply-form .slide28-radio,
       .banner-section .apply-form-container .apply-form .slide27-radio,
       .banner-section .apply-form-container .apply-form .slide26-radio,
-      .banner-section .apply-form-container .apply-form .slide17-radio,
+      .banner-section .apply-form-container .apply-form .slide25-radio,
       .banner-section .apply-form-container .apply-form .slide16-radio,
       .banner-section .apply-form-container .apply-form .slide15-radio,
       .banner-section .apply-form-container .apply-form .slide14-radio,
       .banner-section .apply-form-container .apply-form .slide13-radio,
       .banner-section .apply-form-container .apply-form .slide12-radio,
-      .banner-section .apply-form-container .apply-form .slide9-radio,
+      .banner-section .apply-form-container .apply-form .slide11-radio,
+      .banner-section .apply-form-container .apply-form .slide8-radio,
       .banner-section .apply-form-container .apply-form .slide7-radio,
       .banner-section .apply-form-container .apply-form .slide2-radio,
       .banner-section .apply-form-container .apply-form .slide1-radio {
@@ -294,7 +294,6 @@ header {
         padding: 10px 0;
         margin-bottom: 10px;
         cursor: pointer; }
-        .banner-section .apply-form-container .apply-form .slide33-radio.active,
         .banner-section .apply-form-container .apply-form .slide32-radio.active,
         .banner-section .apply-form-container .apply-form .slide31-radio.active,
         .banner-section .apply-form-container .apply-form .slide30-radio.active,
@@ -302,20 +301,20 @@ header {
         .banner-section .apply-form-container .apply-form .slide28-radio.active,
         .banner-section .apply-form-container .apply-form .slide27-radio.active,
         .banner-section .apply-form-container .apply-form .slide26-radio.active,
-        .banner-section .apply-form-container .apply-form .slide17-radio.active,
+        .banner-section .apply-form-container .apply-form .slide25-radio.active,
         .banner-section .apply-form-container .apply-form .slide16-radio.active,
         .banner-section .apply-form-container .apply-form .slide15-radio.active,
         .banner-section .apply-form-container .apply-form .slide14-radio.active,
         .banner-section .apply-form-container .apply-form .slide13-radio.active,
         .banner-section .apply-form-container .apply-form .slide12-radio.active,
-        .banner-section .apply-form-container .apply-form .slide9-radio.active,
+        .banner-section .apply-form-container .apply-form .slide11-radio.active,
+        .banner-section .apply-form-container .apply-form .slide8-radio.active,
         .banner-section .apply-form-container .apply-form .slide7-radio.active,
         .banner-section .apply-form-container .apply-form .slide2-radio.active,
         .banner-section .apply-form-container .apply-form .slide1-radio.active {
           border-color: #95c11f;
           background: #95c11f;
           color: #fff; }
-        .banner-section .apply-form-container .apply-form .slide33-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide32-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide31-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide30-radio input[type="radio"],
@@ -323,13 +322,14 @@ header {
         .banner-section .apply-form-container .apply-form .slide28-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide27-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide26-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide17-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide25-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide16-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide15-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide14-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide13-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide12-radio input[type="radio"],
-        .banner-section .apply-form-container .apply-form .slide9-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide11-radio input[type="radio"],
+        .banner-section .apply-form-container .apply-form .slide8-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide7-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide2-radio input[type="radio"],
         .banner-section .apply-form-container .apply-form .slide1-radio input[type="radio"] {
