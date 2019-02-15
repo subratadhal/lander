@@ -1,9 +1,17 @@
 import React, { Component } from "react";
-import { FormGroup, Input, Label, Button, FormFeedback, Row, Col } from "reactstrap";
+import {
+  FormGroup,
+  Input,
+  Label,
+  Button,
+  FormFeedback,
+  Row,
+  Col
+} from "reactstrap";
 import validator from "validator";
 import { Link } from "react-router-dom";
 import generator from "generate-password";
-import axios from 'axios';
+import axios from "axios";
 import config from "../../config.json";
 class FormInput extends Component {
   state = {
@@ -20,11 +28,14 @@ class FormInput extends Component {
       self.setState({ loader: true });
       const contact = {
         email: input
-      }
-      axios.post('' + config.apiServerURL + '/emailvalidate', contact)
+      };
+      axios
+        .post("" + config.apiServerURL + "/emailvalidate", contact)
         .then(function (response) {
-
-          if ((response.data.message === "catchall") || (response.data.message === "valid")) {
+          if (
+            response.data.message === "catchall" ||
+            response.data.message === "valid"
+          ) {
             self.setState({
               [name + "Error"]: "",
               [name]: input,
@@ -50,7 +61,7 @@ class FormInput extends Component {
         [name + "Style"]: ""
       });
     }
-  }
+  };
   emailValidatorOnChange = (email, name) => {
     let input = email;
     this.setState({
@@ -59,7 +70,7 @@ class FormInput extends Component {
       [name + "Style"]: "",
       validEmail: false
     });
-  }
+  };
   zipValidatorOnChange = (input, name) => {
     if (validator.isLength(input, { min: 5, max: 5 })) {
       this.setState({
@@ -76,13 +87,20 @@ class FormInput extends Component {
         });
       }
     }
-  }
+  };
   zipValidatorOnClick = (e, input, name) => {
     if (validator.isLength(input, { min: 5, max: 5 })) {
       let self = this;
 
-      axios.get('https://us-zipcode.api.smartystreets.com/lookup?auth-id=' + config.smartystreetsAuthID + '&auth-token=' + config.smartystreetsAuthToken + '&zipcode=' + input
-      )
+      axios
+        .get(
+          "https://us-zipcode.api.smartystreets.com/lookup?auth-id=" +
+          config.smartystreetsAuthID +
+          "&auth-token=" +
+          config.smartystreetsAuthToken +
+          "&zipcode=" +
+          input
+        )
         .then(function (response) {
           if (response.data[0].status) {
             self.setState({
@@ -97,15 +115,23 @@ class FormInput extends Component {
               [name]: input,
               [name + "Style"]: "success"
             });
-            self.props.onChange(e, response.data[0].city_states[0].city, "city");
-            self.props.onChange(e, response.data[0].city_states[0].state, "state");
+            console.log(response.data[0]);
+            self.props.onChange(
+              e,
+              response.data[0].city_states[0].city,
+              "city"
+            );
+            self.props.onChange(
+              e,
+              response.data[0].city_states[0].state_abbreviation,
+              "state"
+            );
             self.props.inputOnClick(e);
           }
         })
         .catch(function (error) {
           console.log(error);
         });
-
     } else {
       if (validator.isLength(input, { min: 0, max: 5 })) {
         this.setState({
@@ -115,11 +141,12 @@ class FormInput extends Component {
         });
       }
     }
-  }
+  };
   inputOnChange = e => {
-    const placeholder = e.target.placeholder ? e.target.placeholder : e.target.name; //condition required for select as select have no placeholder
+    const placeholder = e.target.placeholder
+      ? e.target.placeholder
+      : e.target.name; //condition required for select as select have no placeholder
     const name = e.target.name;
-    console.log('name', name);
     const input = e.target.value ? e.target.value : "";
     const type = e.target.type;
 
@@ -141,12 +168,13 @@ class FormInput extends Component {
           });
         } else {
           this.setState({
-            [name + "Error"]: "Please enter at least 6 characters and max 15 characters.",
+            [name +
+              "Error"]: "Please enter at least 6 characters and max 15 characters.",
             [name]: input,
             [name + "Style"]: "error"
           });
         }
-      } else if (name === 'zipCode') {
+      } else if (name === "zipCode") {
         this.zipValidatorOnChange(input, name);
       } else {
         this.setState({
@@ -155,7 +183,6 @@ class FormInput extends Component {
           [name + "Style"]: ""
         });
       }
-
     }
     this.props.onChange(e, input, name);
   };
@@ -187,12 +214,13 @@ class FormInput extends Component {
             });
           } else {
             this.setState({
-              [name + "Error"]: "Please enter at least 6 characters and max 15 characters.",
+              [name +
+                "Error"]: "Please enter at least 6 characters and max 15 characters.",
               [name]: input,
               [name + "Style"]: "error"
             });
           }
-        } else if (name === 'zipCode') {
+        } else if (name === "zipCode") {
           this.zipValidatorOnClick(e, input, name);
         } else {
           this.setState({
@@ -201,20 +229,21 @@ class FormInput extends Component {
             [name + "Style"]: "success"
           });
         }
-
       }
 
       i++;
     } while (i < idArray.length);
 
-    if ((type !== "email") && name !== "zipCode") {
+    if (type !== "email" && name !== "zipCode") {
       this.props.inputOnClick(e);
     }
   };
   componentWillReceiveProps(nextProps) {
-    var parentProps = nextProps.inputCurrentProps ? nextProps.inputCurrentProps : '';
-    if (parentProps !== 'undefined') {
-      if (parentProps.city !== '') {
+    var parentProps = nextProps.inputCurrentProps
+      ? nextProps.inputCurrentProps
+      : "";
+    if (parentProps !== "undefined") {
+      if (parentProps.city !== "") {
         this.setState({
           city: parentProps.city,
           state: parentProps.state
@@ -295,7 +324,6 @@ class FormInput extends Component {
   };
 
   render() {
-
     const inputSlide = this.props.inputSlide;
     const passwordSuggestion = this.state.passwordSuggestion;
     const passwordSuggestionWrapper = this.state.passwordSuggestionWrapper;
@@ -313,12 +341,15 @@ class FormInput extends Component {
 
     return (
       <Row>
-        {this.state.inputs.map((item, index) => (
-
+        {this.state.inputs.map((item, index) =>
           item.type === "select" ? (
             <Col sm={smVal} key={"k" + index}>
-              <FormGroup >
-                <Label key={"lk" + index} for={item.placeholder} className="bold">
+              <FormGroup>
+                <Label
+                  key={"lk" + index}
+                  for={item.placeholder}
+                  className="bold"
+                >
                   {item.placeholder}
                 </Label>
                 <Input
@@ -334,7 +365,9 @@ class FormInput extends Component {
                   <option value="">Choose</option>
                   {item.data.map((d, i) => {
                     return (
-                      <option key={i} value={d} >{d}</option>
+                      <option key={i} value={d}>
+                        {d}
+                      </option>
                     );
                   })}
                 </Input>
@@ -349,9 +382,11 @@ class FormInput extends Component {
               </FormGroup>
             </Col>
           ) : (
-              <Col sm={(item.placeholder === "Street Address") ? "12" : smVal} key={"lk" + index}>
-                {loader ? (<div className="loader">
-                </div>) : ''}
+              <Col
+                sm={item.placeholder === "Street Address" ? "12" : smVal}
+                key={"lk" + index}
+              >
+                {loader ? <div className="loader" /> : ""}
                 <FormGroup key={"k" + index}>
                   <Label for={item.placeholder} className="bold">
                     {item.placeholder}
@@ -378,7 +413,7 @@ class FormInput extends Component {
                 </FormGroup>
               </Col>
             )
-        ))}
+        )}
         {/* email */}
         {inputSlide === "slide3" ? (
           <Col sm="12">
@@ -387,33 +422,26 @@ class FormInput extends Component {
               <Link to="/terms-of-use">Terms &amp; Conditions</Link> and{" "}
               <Link to="/privacy-policy">Privacy Policy</Link> and to receive
               important notices and other communications electronically.
-          </small>
+            </small>
           </Col>
         ) : (
             ""
           )}
         {/* password */}
 
-        {
-          passwordSuggestionWrapper ? (
-            <Col sm="12">
-              <div className="password-suggestion" >
-                <span
-                  className="ps-password"
-                  onClick={this.passwordMuskOnClick}
-                >
-                  {passwordSuggestion}
-                </span>
-                <span
-                  className="ps-reset"
-                  onClick={this.passwordResetOnClick}
-                />
-                <span className="ps-label">Suggested</span>
-              </div>
-            </Col>
-          ) : (
-              ""
-            )}
+        {passwordSuggestionWrapper ? (
+          <Col sm="12">
+            <div className="password-suggestion">
+              <span className="ps-password" onClick={this.passwordMuskOnClick}>
+                {passwordSuggestion}
+              </span>
+              <span className="ps-reset" onClick={this.passwordResetOnClick} />
+              <span className="ps-label">Suggested</span>
+            </div>
+          </Col>
+        ) : (
+            ""
+          )}
         <Col sm="12">
           <FormGroup>
             <Button
@@ -423,7 +451,7 @@ class FormInput extends Component {
               className="mt15"
             >
               Next
-          </Button>
+            </Button>
           </FormGroup>
         </Col>
       </Row>

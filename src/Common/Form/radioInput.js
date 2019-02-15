@@ -7,11 +7,6 @@ class RadioInput extends Component {
     name: ""
   };
   OptionChange = e => {
-    // const classes = document.getElementsByClassName("slide1-radio");
-    // var i;
-    // for (i = 0; i < classes.length; i++) {
-    //   classes[i].classList.remove("active");
-    // }
     const id = e.target.id;
     document.getElementById(id + "-level").classList.add("active");
     this.props.onChange(e, e.target.value, this.props.name);
@@ -23,7 +18,11 @@ class RadioInput extends Component {
     const id = this.props.id;
     const slideName = this.props.slideName;
     var smVal = "";
-    if (slideName === "slide17") {
+    if (slideName === "slide16") {
+      smVal = 6;
+    } else if (slideName === "slide28") {
+      smVal = 6;
+    } else if (slideName === "slide29") {
       smVal = 6;
     } else {
       smVal = 12;

@@ -122,7 +122,7 @@
     "radio12": {
       "slideName": "slide26",
       "value": [
-        "One Year or less",
+        "1 Year or less",
         "2 Years",
         "3 Years",
         "4 Years",
@@ -143,11 +143,12 @@
     "radio14": {
       "slideName": "slide28",
       "value": [
-        "Excellent 700 +",
-        "Good 600 - 700",
-        "Fair 500 - 600",
-        "Poor & 500",
-        "not sure"
+        "Excellent",
+        "Very good",
+        "Good",
+        "Fair",
+        "Poor",
+        "unsure"
       ],
       "name": "creditScore",
       "id": "radio14"
@@ -155,9 +156,19 @@
     "radio15": {
       "slideName": "slide29",
       "value": [
-        "Credit Card Debt Relief",
-        "Student Loan Relief",
         "Debt Consolidation",
+        "Credit Card",
+        "Home Improvement",
+        "Student Loan",
+        "Major Purchase",
+        "Car",
+        "Green Loan",
+        "Business",
+        "Vavation",
+        "Weddinng",
+        "Relocation",
+        "Medical",
+        "Household",
         "Other"
       ],
       "name": "loanReason",
